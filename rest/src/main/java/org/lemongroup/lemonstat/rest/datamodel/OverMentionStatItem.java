@@ -3,16 +3,15 @@ package org.lemongroup.lemonstat.rest.datamodel;
 /**
  * Экземпляр общей статистики
  */
-
 public class OverMentionStatItem {
 
     private String person;
-    private Integer mentions;
+    private Integer numberOfMentions;
 
     public OverMentionStatItem(){}
-    public OverMentionStatItem(String person, int mentions) {
+    public OverMentionStatItem(String person, int numberOfMentions) {
 	this.person = person;
-	this.mentions = mentions;
+	this.numberOfMentions = numberOfMentions;
     }
 
     public String getPerson() {
@@ -21,11 +20,11 @@ public class OverMentionStatItem {
     public void setPerson(String person) {
 	this.person = person;
     }
-    public Integer getMentions() {
-	return mentions;
+    public Integer getNumberOfMentions() {
+	return numberOfMentions;
     }
-    public void setMentions(Integer mentions) {
-	this.mentions = mentions;
+    public void setNumberOfMentions(Integer numberOfMentions) {
+	this.numberOfMentions = numberOfMentions;
     }
 }
 
