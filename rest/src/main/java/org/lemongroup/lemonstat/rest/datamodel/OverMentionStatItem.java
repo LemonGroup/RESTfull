@@ -1,8 +1,5 @@
 package org.lemongroup.lemonstat.rest.datamodel;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * Экземпляр общей статистики
  */

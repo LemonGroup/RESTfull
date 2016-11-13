@@ -1,4 +1,4 @@
-package org.lemongroup.lemonstat;
+package org.lemongroup.lemonstat.rest;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
