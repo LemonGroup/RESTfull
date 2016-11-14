@@ -42,7 +42,7 @@ public class StatController {
         String startDate = requestParams.get("start_date");
         String endDate = requestParams.get("end_date");
 
-	//Fake datas, return just given dates
+	//Fake data, return just given dates
         List<DailyStat> list = new ArrayList<>();
         if (site.equals("lenta.ru") && person.equalsIgnoreCase("Путин")) {
             list.add(new DailyStat(startDate, 50));
