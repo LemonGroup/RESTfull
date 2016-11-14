@@ -6,22 +6,22 @@ import java.util.Date;
  * Экземпляр ежедневной статистики
  */
 public class DailyStat {
-    private Date date;
+    private String date;
     private Integer numberOfNewPages;
 
     public DailyStat(){
     }
 
-    public DailyStat(Date date, Integer numberOfNewPages) {
+    public DailyStat(String date, Integer numberOfNewPages) {
         this.date = date;
         this.numberOfNewPages = numberOfNewPages;
     }
 
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(String date) {
         this.date = date;
     }
 

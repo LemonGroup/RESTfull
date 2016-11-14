@@ -1,4 +1,4 @@
-package org.lemongroup.lemonstat.rest.controller;
+package oterg.lemongroup.lemonstat.rest.controller;
 
 import org.lemongroup.lemonstat.rest.datamodel.DailyStat;
 import org.lemongroup.lemonstat.rest.datamodel.OverMentionStatItem;
@@ -42,44 +42,25 @@ public class StatController {
         String startDate = requestParams.get("start_date");
         String endDate = requestParams.get("end_date");
 
-        List<DailyStat> list = new ArrayList<>();
-        GregorianCalendar calendar = new GregorianCalendar(2016, Calendar.NOVEMBER, 10);
-        GregorianCalendar calendar2 = new GregorianCalendar(2016, Calendar.NOVEMBER, 11);
-        GregorianCalendar calendar3 = new GregorianCalendar(2016, Calendar.NOVEMBER, 12);
-        GregorianCalendar calendar4 = new GregorianCalendar(2016, Calendar.NOVEMBER, 13);
-
+	//Fake datas, return just given dates
         if (site.equals("lenta.ru") && person.equalsIgnoreCase("Путин")) {
-
-            list.add(new DailyStat(calendar.getTime(), 50));
-            list.add(new DailyStat(calendar2.getTime(), 100));
-            list.add(new DailyStat(calendar3.getTime(), 200));
-            list.add(new DailyStat(calendar4.getTime(), 300));
-
+            list.add(new DailyStat(startDate, 50));
+            list.add(new DailyStat(endDate, 100));
         } else if (site.equals("rbc.ru") && person.equalsIgnoreCase("Путин")) {
-            list.add(new DailyStat(calendar.getTime(), 70));
-            list.add(new DailyStat(calendar2.getTime(), 90));
-            list.add(new DailyStat(calendar3.getTime(), 75));
-            list.add(new DailyStat(calendar4.getTime(), 100));
+            list.add(new DailyStat(startDate, 45));
+            list.add(new DailyStat(endDate, 88));
         } else if (site.equals("lenta.ru") && person.equalsIgnoreCase("Медведев")) {
-            list.add(new DailyStat(calendar.getTime(), 30));
-            list.add(new DailyStat(calendar2.getTime(), 2));
-            list.add(new DailyStat(calendar3.getTime(), 300));
-            list.add(new DailyStat(calendar4.getTime(), 400));
+            list.add(new DailyStat(startDate, 57));
+            list.add(new DailyStat(endDate, 94));
         } else if (site.equals("rbc.ru") && person.equalsIgnoreCase("Медведев")) {
-            list.add(new DailyStat(calendar.getTime(), 100));
-            list.add(new DailyStat(calendar2.getTime(), 300));
-            list.add(new DailyStat(calendar3.getTime(), 100));
-            list.add(new DailyStat(calendar4.getTime(), 500));
+            list.add(new DailyStat(startDate, 66));
+            list.add(new DailyStat(endDate, 91));
         } else if (site.equals("lenta.ru") && person.equalsIgnoreCase("Навальный")) {
-            list.add(new DailyStat(calendar.getTime(), 30));
-            list.add(new DailyStat(calendar2.getTime(), 2));
-            list.add(new DailyStat(calendar3.getTime(), 300));
-            list.add(new DailyStat(calendar4.getTime(), 400));
+            list.add(new DailyStat(startDate, 36));
+            list.add(new DailyStat(endDate, 79));
         } else if (site.equals("rbc.ru") && person.equalsIgnoreCase("Навальный")) {
-            list.add(new DailyStat(calendar.getTime(), 10));
-            list.add(new DailyStat(calendar2.getTime(), 20));
-            list.add(new DailyStat(calendar3.getTime(), 30));
-            list.add(new DailyStat(calendar4.getTime(), 40));
+            list.add(new DailyStat(startDate, 45));
+            list.add(new DailyStat(endDate, 110));
         } else {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
