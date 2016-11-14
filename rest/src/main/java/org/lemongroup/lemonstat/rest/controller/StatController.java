@@ -36,11 +36,11 @@ public class StatController {
     }
 
     @RequestMapping(value = "/stat/daily_stat", method = RequestMethod.GET)
-    public ResponseEntity<List<DailyStat>> getDailyStat(@RequestParam Map<String, Object> requestParams) {
-        String site = (String) requestParams.get("site");
-        String person = (String) requestParams.get("person");
-        Date startDate = (Date) requestParams.get("start_date");
-        Date endDate = (Date) requestParams.get("end_date");
+    public ResponseEntity<List<DailyStat>> getDailyStat(@RequestParam Map<String, String> requestParams) {
+        String site = requestParams.get("site");
+        String person = requestParams.get("person");
+        String startDate = requestParams.get("start_date");
+        String endDate = requestParams.get("end_date");
 
         List<DailyStat> list = new ArrayList<>();
         GregorianCalendar calendar = new GregorianCalendar(2016, Calendar.NOVEMBER, 10);
@@ -49,6 +49,7 @@ public class StatController {
         GregorianCalendar calendar4 = new GregorianCalendar(2016, Calendar.NOVEMBER, 13);
 
         if (site.equals("lenta.ru") && person.equalsIgnoreCase("Путин")) {
+
             list.add(new DailyStat(calendar.getTime(), 50));
             list.add(new DailyStat(calendar2.getTime(), 100));
             list.add(new DailyStat(calendar3.getTime(), 200));
