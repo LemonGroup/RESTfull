@@ -1,7 +1,5 @@
 package org.lemongroup.lemonstat.rest.datamodel;
 
-import java.util.Date;
-
 /**
  * Экземпляр ежедневной статистики
  */
