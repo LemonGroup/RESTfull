@@ -43,7 +43,9 @@ public class StatController {
         String endDate = requestParams.get("end_date");
 
 	//Fake datas, return just given dates
+        List<DailyStat> list = new ArrayList<>();
         if (site.equals("lenta.ru") && person.equalsIgnoreCase("Путин")) {
+	    System.out.println("match!");
             list.add(new DailyStat(startDate, 50));
             list.add(new DailyStat(endDate, 100));
         } else if (site.equals("rbc.ru") && person.equalsIgnoreCase("Путин")) {
@@ -62,9 +64,11 @@ public class StatController {
             list.add(new DailyStat(startDate, 45));
             list.add(new DailyStat(endDate, 110));
         } else {
+	    System.out.println("no content!");
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
+	    System.out.println("end!");
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
 }
