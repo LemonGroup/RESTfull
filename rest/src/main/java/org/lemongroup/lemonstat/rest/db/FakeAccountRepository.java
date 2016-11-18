@@ -4,26 +4,26 @@ import java.util.Map;
 import java.util.List;
 import java.util.ArrayList;
 
-public class AccountRepository {
+public class FakeAccountRepository implements IAccountRepository{
 
-    private static AccountRepository instance;
+    private static FakeAccountRepository instance;
     private static String FAKE_USER = "testuser";
     private static String FAKE_PASS = "testpass";
     private static long FAKE_UID = 1;
     private static long FAKE_GID = 3;
     private static byte FAKE_PRIV = 2;
 
-    private AccountRepository() {
+    private FakeAccountRepository() {
     }
 
-    public static AccountRepository getInstance(){
+    public static FakeAccountRepository getInstance(){
 	if(instance == null){
-	    instance = new AccountRepository();
+	    instance = new FakeAccountRepository();
 	}
 	return instance;
     }
 
-    public static long getUserIdByUserName(String user) {
+    public long getUserIdByUserName(String user) {
 	//TODO:Work with DB
 	if(user.equals(FAKE_USER)){
 	    return FAKE_UID;
@@ -31,7 +31,7 @@ public class AccountRepository {
 	return 0;
     }
 
-    public static String getPasswordByUserId(long uId) { 
+    public String getPasswordByUserId(long uId) { 
 	//TODO:Work with DB
 	if(uId == FAKE_UID){
 	    return FAKE_PASS;
@@ -39,7 +39,7 @@ public class AccountRepository {
 	return null;
     }
 
-    public static long getGroupIdByUser(String user) { 
+    public  long getGroupIdByUser(String user) { 
 	//TODO:Work with DB
 	if(user.equals(FAKE_USER)){
 	    return FAKE_GID;
@@ -47,7 +47,7 @@ public class AccountRepository {
 	return 0;
     }
 
-    public static byte getPrivilegeByUser(String user) { 
+    public byte getPrivilegeByUser(String user) { 
 	//TODO:Work with DB
 	if(user.equals(FAKE_USER)){
 	    return FAKE_PRIV;
