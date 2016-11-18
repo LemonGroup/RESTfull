@@ -1,8 +1,10 @@
 package org.lemongroup.lemonstat.rest.controller;
 
+import org.lemongroup.lemonstat.rest.utils.AccountHandler;
 import org.lemongroup.lemonstat.rest.datamodel.Person;
 import org.lemongroup.lemonstat.rest.datamodel.KeyWord;
 import org.lemongroup.lemonstat.rest.datamodel.Site;
+import org.lemongroup.lemonstat.rest.datamodel.Session;
 import org.lemongroup.lemonstat.rest.db.CatalogRepository;
 
 import java.util.Map;
@@ -20,6 +22,27 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 @RestController
 public class AdminController {
+
+
+    /**
+     * Auth methods
+     */
+    //GET persons
+    @RequestMapping(value = "/auth", method = RequestMethod.GET)
+    public ResponseEntity<Session> auth(@RequestParam Map<String, String> authParams) {
+
+	System.out.println("auth: " +  authParams);
+
+	AccountHandler ah = AccountHandler.getInstance();
+	Session session;
+	if(ah.auth(authParams)) {
+	    session = ah.startSession(authParams.get("user"));
+	    return new ResponseEntity<Session>(session, HttpStatus.OK);
+	} else {
+	    return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+	}
+    }
+    
 
     /**
      * Person CRUD methods
