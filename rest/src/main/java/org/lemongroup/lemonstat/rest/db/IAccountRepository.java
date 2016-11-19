@@ -6,4 +6,5 @@ public interface IAccountRepository {
     public long getGroupIdByUser(String user);
     public byte getPrivilegeByUser(String user); 
     public String getTokenByUser(String user);
+    public long getGroupIdByToken(String token);
 }

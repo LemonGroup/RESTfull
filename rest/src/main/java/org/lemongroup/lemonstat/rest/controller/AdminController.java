@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,8 +24,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 @RestController
 public class AdminController {
-
-
     /**
      * Auth methods
      */
@@ -36,6 +35,7 @@ public class AdminController {
 
 	AccountHandler ah = AccountHandler.getInstance();
 	AuthResponse authResp;
+	//if auth success
 	if(ah.auth(authParams)) {
 	    authResp = ah.getAuthResponse(authParams.get("user"));
 	    return new ResponseEntity<AuthResponse>(authResp, HttpStatus.OK);
@@ -46,9 +46,10 @@ public class AdminController {
 
     //Get all catalogs
     @RequestMapping(value = "/catalog/catalogs", method = RequestMethod.GET)
-    public ResponseEntity<CatalogList> getAllCatalogs() {
-
-        CatalogList list = new CatalogRepository().getAllCatalogs();
+    public ResponseEntity<CatalogList> getAllCatalogs(@RequestHeader(value="Auth-Token") String token) {
+	AccountHandler ah = AccountHandler.getInstance();
+	long groupId = ah.getGroupIdByToken(token);
+        CatalogList list = new CatalogRepository().getAllCatalogsByGroupId(groupId);
         if (list == null) {
 	    System.out.println("NO CONTENT");
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);

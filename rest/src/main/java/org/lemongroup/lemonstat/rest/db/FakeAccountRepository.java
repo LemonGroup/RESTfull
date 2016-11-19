@@ -64,4 +64,11 @@ public class FakeAccountRepository implements IAccountRepository{
 	}
 	return UUID.randomUUID().toString();
     }
+
+    public long getGroupIdByToken(String token) {
+	if(token.equals(FAKE_TOKEN)){
+	    return FAKE_GID;
+	}
+	return 0;
+    }
 }

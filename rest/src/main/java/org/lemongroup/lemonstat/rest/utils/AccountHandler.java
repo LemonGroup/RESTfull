@@ -43,6 +43,9 @@ public class AccountHandler {
 	byte privilege = accountRepo.getPrivilegeByUser(user);
 	return new AuthResponse(token,groupId,privilege);
     }
+    public static long getGroupIdByToken(String token) { 
+	return accountRepo.getGroupIdByToken(token);
+    }
 
 
 }
