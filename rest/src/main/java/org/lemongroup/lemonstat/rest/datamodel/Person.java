@@ -4,13 +4,23 @@ package org.lemongroup.lemonstat.rest.datamodel;
  * Экземпляр персоны
  */
 public class Person {
+    private long id;
     private String personName;
 
     public Person(){
     }
 
-    public Person(String personName) {
+    public Person(long id, String personName) {
+        this.id = id;
         this.personName = personName;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getPersonName() {

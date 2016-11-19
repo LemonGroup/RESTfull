@@ -5,4 +5,5 @@ public interface IAccountRepository {
     public String getPasswordByUserId(long uId); 
     public long getGroupIdByUser(String user);
     public byte getPrivilegeByUser(String user); 
+    public String getTokenByUser(String user);
 }

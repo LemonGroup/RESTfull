@@ -3,10 +3,12 @@ package org.lemongroup.lemonstat.rest.db;
 import java.util.Map;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class FakeAccountRepository implements IAccountRepository{
 
     private static FakeAccountRepository instance;
+    private static String FAKE_TOKEN = "this-is-fake-token";
     private static String FAKE_USER = "testuser";
     private static String FAKE_PASS = "testpass";
     private static long FAKE_UID = 1;
@@ -53,5 +55,13 @@ public class FakeAccountRepository implements IAccountRepository{
 	    return FAKE_PRIV;
 	}
 	return 0;
+    }
+
+    public String getTokenByUser(String user) { 
+	//TODO:Work with DB
+	if(user.equals(FAKE_USER)){
+	    return FAKE_TOKEN;
+	}
+	return UUID.randomUUID().toString();
     }
 }

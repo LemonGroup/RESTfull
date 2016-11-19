@@ -2,9 +2,10 @@ package org.lemongroup.lemonstat.rest.controller;
 
 import org.lemongroup.lemonstat.rest.utils.AccountHandler;
 import org.lemongroup.lemonstat.rest.datamodel.Person;
-import org.lemongroup.lemonstat.rest.datamodel.KeyWord;
+import org.lemongroup.lemonstat.rest.datamodel.Keyword;
 import org.lemongroup.lemonstat.rest.datamodel.Site;
-import org.lemongroup.lemonstat.rest.datamodel.Session;
+import org.lemongroup.lemonstat.rest.datamodel.CatalogList;
+import org.lemongroup.lemonstat.rest.datamodel.AuthResponse;
 import org.lemongroup.lemonstat.rest.db.CatalogRepository;
 
 import java.util.Map;
@@ -28,21 +29,32 @@ public class AdminController {
      * Auth methods
      */
     //GET persons
-    @RequestMapping(value = "/auth", method = RequestMethod.GET)
-    public ResponseEntity<Session> auth(@RequestParam Map<String, String> authParams) {
+    @RequestMapping(value = "/user/auth", method = RequestMethod.GET)
+    public ResponseEntity<AuthResponse> auth(@RequestParam Map<String, String> authParams) {
 
 	System.out.println("auth: " +  authParams);
 
 	AccountHandler ah = AccountHandler.getInstance();
-	Session session;
+	AuthResponse authResp;
 	if(ah.auth(authParams)) {
-	    session = ah.startSession(authParams.get("user"));
-	    return new ResponseEntity<Session>(session, HttpStatus.OK);
+	    authResp = ah.getAuthResponse(authParams.get("user"));
+	    return new ResponseEntity<AuthResponse>(authResp, HttpStatus.OK);
 	} else {
 	    return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 	}
     }
-    
+
+    //Get all catalogs
+    @RequestMapping(value = "/catalog/catalogs", method = RequestMethod.GET)
+    public ResponseEntity<CatalogList> getAllCatalogs() {
+
+        CatalogList list = new CatalogRepository().getAllCatalogs();
+        if (list == null) {
+	    System.out.println("NO CONTENT");
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<CatalogList>(list, HttpStatus.OK);
+    }
 
     /**
      * Person CRUD methods
@@ -72,55 +84,55 @@ public class AdminController {
 	//Do something with repository
         return new ResponseEntity<Person>(newPerson, HttpStatus.OK);
     }
-
+/*
     //Delete person
     @RequestMapping(value = "/catalog/persons/{personName}", method = RequestMethod.DELETE)
     public ResponseEntity<Person> deletePerson(@PathVariable String personName) {
 	//Do something with repository
         return new ResponseEntity<Person>(new Person(personName), HttpStatus.OK);
     }
-
+*/
     /**
      * Keywords CRUD methods
      */
-    //Get all keywords by person
+    //Get all keywords 
     @RequestMapping(value = "/catalog/keywords", method = RequestMethod.GET)
-    public ResponseEntity<List<KeyWord>> getAllKeyWordsByPerson(@RequestParam(value = "person") String person) {
+    public ResponseEntity<List<Keyword>> getAllKeywords() {
 
-        List<KeyWord> list = new CatalogRepository().getAllKeyWordsByPerson(person);
+        List<Keyword> list = new CatalogRepository().getAllKeywords();
         if (list.size() == 0) {
 	    System.out.println("NO CONTENT");
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
-        return new ResponseEntity<List<KeyWord>>(list, HttpStatus.OK);
+        return new ResponseEntity<List<Keyword>>(list, HttpStatus.OK);
     }
 
     //Create new keyword to person
     @RequestMapping(value = "/catalog/keywords/{person}", method = RequestMethod.POST)
-    public ResponseEntity<KeyWord> postNewKeyWordToPerson(@PathVariable String person, @RequestBody KeyWord keyword ) {
+    public ResponseEntity<Keyword> postNewKeywordToPerson(@PathVariable String person, @RequestBody Keyword keyword ) {
 	//Do something with repository
-        return new ResponseEntity<KeyWord>(keyword, HttpStatus.OK);
+        return new ResponseEntity<Keyword>(keyword, HttpStatus.OK);
     }
 
     //Update keyword by person
     @RequestMapping(value = "/catalog/keywords/{person}/{keyword}", method = RequestMethod.PUT)
-    public ResponseEntity<KeyWord> updateKeyWordByPerson(
+    public ResponseEntity<Keyword> updateKeywordByPerson(
 	    @PathVariable String person, 
 	    @PathVariable String keyword, 
-	    @RequestBody KeyWord newKeyWord ) {
+	    @RequestBody Keyword newKeyword ) {
 	//Do something with repository
-        return new ResponseEntity<KeyWord>(newKeyWord, HttpStatus.OK);
+        return new ResponseEntity<Keyword>(newKeyword, HttpStatus.OK);
     }
-
+/*
     //Delete keyword by person
     @RequestMapping(value = "/catalog/keywords/{person}/{keyword}", method = RequestMethod.DELETE)
-    public ResponseEntity<KeyWord> deleteKeyWordForPerson(
+    public ResponseEntity<Keyword> deleteKeywordForPerson(
 	    @PathVariable String person, 
 	    @PathVariable String keyword) {
 	//Do something with repository
-        return new ResponseEntity<KeyWord>(new KeyWord(keyword), HttpStatus.OK);
+        return new ResponseEntity<Keyword>(new Keyword(keyword), HttpStatus.OK);
     }
-
+*/
     /**
      * Sites CRUD methods
      */
@@ -149,12 +161,12 @@ public class AdminController {
 	//Do something with repository
         return new ResponseEntity<Site>(newSite, HttpStatus.OK);
     }
-
+/*
     //Delete site
     @RequestMapping(value = "/catalog/sites/{site}/", method = RequestMethod.DELETE)
     public ResponseEntity<Site> deleteSite(@PathVariable String site) {
 	//Do something with repository
         return new ResponseEntity<Site>(new Site(site), HttpStatus.OK);
     }
-
+*/
 }

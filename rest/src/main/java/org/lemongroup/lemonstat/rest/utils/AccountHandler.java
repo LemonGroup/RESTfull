@@ -1,13 +1,12 @@
 package org.lemongroup.lemonstat.rest.utils;
 
-import org.lemongroup.lemonstat.rest.datamodel.Session;
+import org.lemongroup.lemonstat.rest.datamodel.AuthResponse;
 import org.lemongroup.lemonstat.rest.db.FakeAccountRepository;
 import org.lemongroup.lemonstat.rest.db.IAccountRepository;
 
 import java.util.Map;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.UUID;
 
 public class AccountHandler {
 
@@ -38,12 +37,11 @@ public class AccountHandler {
 	}
 	return false;
     }
-    public static Session startSession(String user) {
-	String uuid = UUID.randomUUID().toString();
+    public static AuthResponse getAuthResponse(String user) {
+	String token = accountRepo.getTokenByUser(user);
 	long groupId = accountRepo.getGroupIdByUser(user);
 	byte privilege = accountRepo.getPrivilegeByUser(user);
-	int idleTimeout = 300;
-	return new Session(uuid,groupId,privilege,idleTimeout);
+	return new AuthResponse(token,groupId,privilege);
     }
 
 
