@@ -46,6 +46,4 @@ public class AccountHandler {
     public static long getGroupIdByToken(String token) { 
 	return accountRepo.getGroupIdByToken(token);
     }
-
-
 }

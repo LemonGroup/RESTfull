@@ -62,9 +62,10 @@ public class AdminController {
      */
     //GET persons
     @RequestMapping(value = "/catalog/persons", method = RequestMethod.GET)
-    public ResponseEntity<List<Person>> getAllPersons() {
-
-        List<Person> list = new CatalogRepository().getAllPersons();
+    public ResponseEntity<List<Person>> getAllPersons(@RequestHeader(value="Auth-Token") String token) {
+        AccountHandler ah = AccountHandler.getInstance();
+        long groupId = ah.getGroupIdByToken(token);
+        List<Person> list = new CatalogRepository().getAllPersons(groupId);
         if (list.size() == 0) {
 	    System.out.println("NO CONTENT");
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -98,9 +99,10 @@ public class AdminController {
      */
     //Get all keywords 
     @RequestMapping(value = "/catalog/keywords", method = RequestMethod.GET)
-    public ResponseEntity<List<Keyword>> getAllKeywords() {
-
-        List<Keyword> list = new CatalogRepository().getAllKeywords();
+    public ResponseEntity<List<Keyword>> getAllKeywords(@RequestHeader(value="Auth-Token") String token) {
+        AccountHandler ah = AccountHandler.getInstance();
+        long groupId = ah.getGroupIdByToken(token);
+        List<Keyword> list = new CatalogRepository().getAllKeywords(groupId);
         if (list.size() == 0) {
 	    System.out.println("NO CONTENT");
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -139,9 +141,10 @@ public class AdminController {
      */
     //Get all sites
     @RequestMapping(value = "/catalog/sites", method = RequestMethod.GET)
-    public ResponseEntity<List<Site>> getAllSites() {
-
-        List<Site> list = new CatalogRepository().getAllSites();
+    public ResponseEntity<List<Site>> getAllSites(@RequestHeader(value="Auth-Token") String token) {
+        AccountHandler ah = AccountHandler.getInstance();
+        long groupId = ah.getGroupIdByToken(token);
+        List<Site> list = new CatalogRepository().getAllSites(groupId);
         if (list.size() == 0) {
 	    System.out.println("NO CONTENT");
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
