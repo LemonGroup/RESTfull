@@ -7,6 +7,8 @@ import org.lemongroup.lemonstat.rest.datamodel.Site;
 import org.lemongroup.lemonstat.rest.datamodel.CatalogList;
 import org.lemongroup.lemonstat.rest.datamodel.AuthResponse;
 import org.lemongroup.lemonstat.rest.db.CatalogRepository;
+import org.lemongroup.lemonstat.rest.db.IPersonRepository;
+import org.lemongroup.lemonstat.rest.db.FakePersonRepository;
 
 import java.util.Map;
 import java.util.List;
@@ -77,6 +79,10 @@ public class AdminController {
     public ResponseEntity<Person> postNewPerson(
 	    @RequestHeader(value="Auth-Token") String token,
 	    @RequestBody Person person) {
+        AccountHandler ah = AccountHandler.getInstance();
+	IPersonRepository pr = FakePersonRepository.getInstance();
+	long personId = pr.createNewPersonByGroup(person.getPersonName(),ah.getGroupIdByToken(token));
+	person.setId(personId);
 	//Do something with repository
         return new ResponseEntity<Person>(person, HttpStatus.OK);
     }
