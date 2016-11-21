@@ -29,9 +29,8 @@ public class AdminController {
      */
     //GET persons
     @RequestMapping(value = "/user/auth", method = RequestMethod.GET)
-    public ResponseEntity<AuthResponse> auth(@RequestParam Map<String, String> authParams) {
-
-	System.out.println("auth: " +  authParams);
+    public ResponseEntity<AuthResponse> auth(
+	    @RequestParam Map<String, String> authParams) {
 
 	AccountHandler ah = AccountHandler.getInstance();
 	AuthResponse authResp;
@@ -46,12 +45,12 @@ public class AdminController {
 
     //Get all catalogs
     @RequestMapping(value = "/catalog/catalogs", method = RequestMethod.GET)
-    public ResponseEntity<CatalogList> getAllCatalogs(@RequestHeader(value="Auth-Token") String token) {
+    public ResponseEntity<CatalogList> getAllCatalogs(
+	    @RequestHeader(value="Auth-Token") String token) {
 	AccountHandler ah = AccountHandler.getInstance();
 	long groupId = ah.getGroupIdByToken(token);
         CatalogList list = new CatalogRepository().getAllCatalogsByGroupId(groupId);
         if (list == null) {
-	    System.out.println("NO CONTENT");
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         return new ResponseEntity<CatalogList>(list, HttpStatus.OK);
@@ -62,12 +61,12 @@ public class AdminController {
      */
     //GET persons
     @RequestMapping(value = "/catalog/persons", method = RequestMethod.GET)
-    public ResponseEntity<List<Person>> getAllPersons(@RequestHeader(value="Auth-Token") String token) {
+    public ResponseEntity<List<Person>> getAllPersons(
+	    @RequestHeader(value="Auth-Token") String token) {
         AccountHandler ah = AccountHandler.getInstance();
         long groupId = ah.getGroupIdByToken(token);
         List<Person> list = new CatalogRepository().getAllPersons(groupId);
         if (list.size() == 0) {
-	    System.out.println("NO CONTENT");
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         return new ResponseEntity<List<Person>>(list, HttpStatus.OK);
@@ -75,14 +74,19 @@ public class AdminController {
 
     //Create new person
     @RequestMapping(value = "/catalog/persons", method = RequestMethod.POST)
-    public ResponseEntity<Person> postNewPerson(@RequestBody Person person) {
+    public ResponseEntity<Person> postNewPerson(
+	    @RequestHeader(value="Auth-Token") String token,
+	    @RequestBody Person person) {
 	//Do something with repository
         return new ResponseEntity<Person>(person, HttpStatus.OK);
     }
 
     //Update person name
     @RequestMapping(value = "/catalog/persons/{personName}", method = RequestMethod.PUT)
-    public ResponseEntity<Person> updatePerson(@PathVariable String personName, @RequestBody Person newPerson ) {
+    public ResponseEntity<Person> updatePerson(
+	    @RequestHeader(value="Auth-Token") String token,
+	    @PathVariable String personName, 
+	    @RequestBody Person newPerson ) {
 	//Do something with repository
         return new ResponseEntity<Person>(newPerson, HttpStatus.OK);
     }
@@ -99,7 +103,8 @@ public class AdminController {
      */
     //Get all keywords 
     @RequestMapping(value = "/catalog/keywords", method = RequestMethod.GET)
-    public ResponseEntity<List<Keyword>> getAllKeywords(@RequestHeader(value="Auth-Token") String token) {
+    public ResponseEntity<List<Keyword>> getAllKeywords(
+	    @RequestHeader(value="Auth-Token") String token) {
         AccountHandler ah = AccountHandler.getInstance();
         long groupId = ah.getGroupIdByToken(token);
         List<Keyword> list = new CatalogRepository().getAllKeywords(groupId);
@@ -112,7 +117,10 @@ public class AdminController {
 
     //Create new keyword to person
     @RequestMapping(value = "/catalog/keywords/{person}", method = RequestMethod.POST)
-    public ResponseEntity<Keyword> postNewKeywordToPerson(@PathVariable String person, @RequestBody Keyword keyword ) {
+    public ResponseEntity<Keyword> postNewKeywordToPerson(
+	    @RequestHeader(value="Auth-Token") String token,
+	    @PathVariable String person, 
+	    @RequestBody Keyword keyword ) {
 	//Do something with repository
         return new ResponseEntity<Keyword>(keyword, HttpStatus.OK);
     }
@@ -120,6 +128,7 @@ public class AdminController {
     //Update keyword by person
     @RequestMapping(value = "/catalog/keywords/{person}/{keyword}", method = RequestMethod.PUT)
     public ResponseEntity<Keyword> updateKeywordByPerson(
+	    @RequestHeader(value="Auth-Token") String token,
 	    @PathVariable String person, 
 	    @PathVariable String keyword, 
 	    @RequestBody Keyword newKeyword ) {
@@ -141,7 +150,8 @@ public class AdminController {
      */
     //Get all sites
     @RequestMapping(value = "/catalog/sites", method = RequestMethod.GET)
-    public ResponseEntity<List<Site>> getAllSites(@RequestHeader(value="Auth-Token") String token) {
+    public ResponseEntity<List<Site>> getAllSites(
+	    @RequestHeader(value="Auth-Token") String token) {
         AccountHandler ah = AccountHandler.getInstance();
         long groupId = ah.getGroupIdByToken(token);
         List<Site> list = new CatalogRepository().getAllSites(groupId);
@@ -154,14 +164,19 @@ public class AdminController {
     //
     //Create new site
     @RequestMapping(value = "/catalog/sites", method = RequestMethod.POST)
-    public ResponseEntity<Site> postNewSite(@RequestBody Site site) {
+    public ResponseEntity<Site> postNewSite(
+	    @RequestHeader(value="Auth-Token") String token,
+	    @RequestBody Site site) {
 	//Do something with repository
         return new ResponseEntity<Site>(site, HttpStatus.OK);
     }
 
     //Update site name
     @RequestMapping(value = "/catalog/sites/{site}/", method = RequestMethod.PUT)
-    public ResponseEntity<Site> updateSite(@PathVariable String site, @RequestBody Site newSite ) {
+    public ResponseEntity<Site> updateSite(
+	    @RequestHeader(value="Auth-Token") String token,
+	    @PathVariable String site, 
+	    @RequestBody Site newSite ) {
 	//Do something with repository
         return new ResponseEntity<Site>(newSite, HttpStatus.OK);
     }
