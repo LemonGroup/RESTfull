@@ -1,14 +1,12 @@
 package org.lemongroup.lemonstat.rest.controller;
 
+import org.lemongroup.lemonstat.rest.db.*;
 import org.lemongroup.lemonstat.rest.utils.AccountHandler;
 import org.lemongroup.lemonstat.rest.datamodel.Person;
 import org.lemongroup.lemonstat.rest.datamodel.Keyword;
 import org.lemongroup.lemonstat.rest.datamodel.Site;
 import org.lemongroup.lemonstat.rest.datamodel.CatalogList;
 import org.lemongroup.lemonstat.rest.datamodel.AuthResponse;
-import org.lemongroup.lemonstat.rest.db.CatalogRepository;
-import org.lemongroup.lemonstat.rest.db.IPersonRepository;
-import org.lemongroup.lemonstat.rest.db.FakePersonRepository;
 
 import java.util.Map;
 import java.util.List;
@@ -32,25 +30,25 @@ public class AdminController {
     //GET persons
     @RequestMapping(value = "/user/auth", method = RequestMethod.GET)
     public ResponseEntity<AuthResponse> auth(
-	    @RequestParam Map<String, String> authParams) {
+            @RequestParam Map<String, String> authParams) {
 
-	AccountHandler ah = AccountHandler.getInstance();
-	AuthResponse authResp;
-	//if auth success
-	if(ah.auth(authParams)) {
-	    authResp = ah.getAuthResponse(authParams.get("user"));
-	    return new ResponseEntity<AuthResponse>(authResp, HttpStatus.OK);
-	} else {
-	    return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-	}
+        AccountHandler ah = AccountHandler.getInstance();
+        AuthResponse authResp;
+        //if auth success
+        if (ah.auth(authParams)) {
+            authResp = ah.getAuthResponse(authParams.get("user"));
+            return new ResponseEntity<AuthResponse>(authResp, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
     }
 
     //Get all catalogs
     @RequestMapping(value = "/catalog/catalogs", method = RequestMethod.GET)
     public ResponseEntity<CatalogList> getAllCatalogs(
-	    @RequestHeader(value="Auth-Token") String token) {
-	AccountHandler ah = AccountHandler.getInstance();
-	long groupId = ah.getGroupIdByToken(token);
+            @RequestHeader(value = "Auth-Token") String token) {
+        AccountHandler ah = AccountHandler.getInstance();
+        long groupId = ah.getGroupIdByToken(token);
         CatalogList list = new CatalogRepository().getAllCatalogsByGroupId(groupId);
         if (list == null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -64,7 +62,7 @@ public class AdminController {
     //GET persons
     @RequestMapping(value = "/catalog/persons", method = RequestMethod.GET)
     public ResponseEntity<List<Person>> getAllPersons(
-	    @RequestHeader(value="Auth-Token") String token) {
+            @RequestHeader(value = "Auth-Token") String token) {
         AccountHandler ah = AccountHandler.getInstance();
         long groupId = ah.getGroupIdByToken(token);
         List<Person> list = new CatalogRepository().getAllPersons(groupId);
@@ -77,23 +75,23 @@ public class AdminController {
     //Create new person
     @RequestMapping(value = "/catalog/persons", method = RequestMethod.POST)
     public ResponseEntity<Person> postNewPerson(
-	    @RequestHeader(value="Auth-Token") String token,
-	    @RequestBody Person person) {
+            @RequestHeader(value = "Auth-Token") String token,
+            @RequestBody Person person) {
         AccountHandler ah = AccountHandler.getInstance();
-	IPersonRepository pr = FakePersonRepository.getInstance();
-	long personId = pr.createNewPersonByGroup(person.getPersonName(),ah.getGroupIdByToken(token));
-	person.setId(personId);
-	//Do something with repository
+        IPersonRepository pr = FakePersonRepository.getInstance();
+        long personId = pr.createNewPersonByGroup(person.getPersonName(), ah.getGroupIdByToken(token));
+        person.setId(personId);
+        //Do something with repository
         return new ResponseEntity<Person>(person, HttpStatus.OK);
     }
 
     //Update person name
     @RequestMapping(value = "/catalog/persons/{personName}", method = RequestMethod.PUT)
     public ResponseEntity<Person> updatePerson(
-	    @RequestHeader(value="Auth-Token") String token,
-	    @PathVariable String personName, 
-	    @RequestBody Person newPerson ) {
-	//Do something with repository
+            @RequestHeader(value = "Auth-Token") String token,
+            @PathVariable String personName,
+            @RequestBody Person newPerson) {
+        //Do something with repository
         return new ResponseEntity<Person>(newPerson, HttpStatus.OK);
     }
 /*
@@ -104,18 +102,19 @@ public class AdminController {
         return new ResponseEntity<Person>(new Person(personName), HttpStatus.OK);
     }
 */
+
     /**
      * Keywords CRUD methods
      */
     //Get all keywords 
     @RequestMapping(value = "/catalog/keywords", method = RequestMethod.GET)
     public ResponseEntity<List<Keyword>> getAllKeywords(
-	    @RequestHeader(value="Auth-Token") String token) {
+            @RequestHeader(value = "Auth-Token") String token) {
         AccountHandler ah = AccountHandler.getInstance();
         long groupId = ah.getGroupIdByToken(token);
         List<Keyword> list = new CatalogRepository().getAllKeywords(groupId);
         if (list.size() == 0) {
-	    System.out.println("NO CONTENT");
+            System.out.println("NO CONTENT");
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         return new ResponseEntity<List<Keyword>>(list, HttpStatus.OK);
@@ -124,21 +123,24 @@ public class AdminController {
     //Create new keyword to person
     @RequestMapping(value = "/catalog/keywords/{person}", method = RequestMethod.POST)
     public ResponseEntity<Keyword> postNewKeywordToPerson(
-	    @RequestHeader(value="Auth-Token") String token,
-	    @PathVariable String person, 
-	    @RequestBody Keyword keyword ) {
-	//Do something with repository
+            @RequestHeader(value = "Auth-Token") String token,
+            @RequestBody Keyword keyword) {
+        AccountHandler ah = AccountHandler.getInstance();
+        IKeywordRepository keywordRepository = FakeKeywordRepository.getInstance();
+        long keywordId = keywordRepository.createNewKeywordByGroup(keyword.getPersonId(), keyword.getKeywordName(), ah.getGroupIdByToken(token));
+        keyword.setId(keywordId);
+        //Do something with repository
         return new ResponseEntity<Keyword>(keyword, HttpStatus.OK);
     }
 
     //Update keyword by person
     @RequestMapping(value = "/catalog/keywords/{person}/{keyword}", method = RequestMethod.PUT)
     public ResponseEntity<Keyword> updateKeywordByPerson(
-	    @RequestHeader(value="Auth-Token") String token,
-	    @PathVariable String person, 
-	    @PathVariable String keyword, 
-	    @RequestBody Keyword newKeyword ) {
-	//Do something with repository
+            @RequestHeader(value = "Auth-Token") String token,
+            @PathVariable String person,
+            @PathVariable String keyword,
+            @RequestBody Keyword newKeyword) {
+        //Do something with repository
         return new ResponseEntity<Keyword>(newKeyword, HttpStatus.OK);
     }
 /*
@@ -151,39 +153,45 @@ public class AdminController {
         return new ResponseEntity<Keyword>(new Keyword(keyword), HttpStatus.OK);
     }
 */
+
     /**
      * Sites CRUD methods
      */
     //Get all sites
     @RequestMapping(value = "/catalog/sites", method = RequestMethod.GET)
     public ResponseEntity<List<Site>> getAllSites(
-	    @RequestHeader(value="Auth-Token") String token) {
+            @RequestHeader(value = "Auth-Token") String token) {
         AccountHandler ah = AccountHandler.getInstance();
         long groupId = ah.getGroupIdByToken(token);
         List<Site> list = new CatalogRepository().getAllSites(groupId);
         if (list.size() == 0) {
-	    System.out.println("NO CONTENT");
+            System.out.println("NO CONTENT");
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         return new ResponseEntity<List<Site>>(list, HttpStatus.OK);
     }
+
     //
     //Create new site
     @RequestMapping(value = "/catalog/sites", method = RequestMethod.POST)
     public ResponseEntity<Site> postNewSite(
-	    @RequestHeader(value="Auth-Token") String token,
-	    @RequestBody Site site) {
-	//Do something with repository
+            @RequestHeader(value = "Auth-Token") String token,
+            @RequestBody Site site) {
+        AccountHandler ah = AccountHandler.getInstance();
+        ISiteRepository siteRepository = FakeSiteRepository.getInstance();
+        long siteId = siteRepository.createNewSiteByGroup(site.getSiteName(), ah.getGroupIdByToken(token));
+        site.setId(siteId);
+        //Do something with repository
         return new ResponseEntity<Site>(site, HttpStatus.OK);
     }
 
     //Update site name
     @RequestMapping(value = "/catalog/sites/{site}/", method = RequestMethod.PUT)
     public ResponseEntity<Site> updateSite(
-	    @RequestHeader(value="Auth-Token") String token,
-	    @PathVariable String site, 
-	    @RequestBody Site newSite ) {
-	//Do something with repository
+            @RequestHeader(value = "Auth-Token") String token,
+            @PathVariable String site,
+            @RequestBody Site newSite) {
+        //Do something with repository
         return new ResponseEntity<Site>(newSite, HttpStatus.OK);
     }
 /*

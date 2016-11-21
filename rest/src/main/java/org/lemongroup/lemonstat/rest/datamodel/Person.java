@@ -1,13 +1,13 @@
 package org.lemongroup.lemonstat.rest.datamodel;
 
 /**
- * Экземпляр персоны
+ * Represents an instance of a person.
  */
 public class Person {
     private long id;
     private String personName;
 
-    public Person(){
+    public Person() {
     }
 
     public Person(long id, String personName) {

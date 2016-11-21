@@ -6,15 +6,15 @@ package org.lemongroup.lemonstat.rest.datamodel;
 public class Keyword {
     private long id;
     private long personId;
-    private String keyword;
+    private String keywordName;
 
-    public Keyword(){
+    public Keyword() {
     }
 
-    public Keyword(long id, long personId, String keyword) {
-	this.id = id;
-	this.personId = personId;
-        this.keyword = keyword;
+    public Keyword(long id, long personId, String keywordName) {
+        this.id = id;
+        this.personId = personId;
+        this.keywordName = keywordName;
     }
 
     public long getId() {
@@ -33,11 +33,11 @@ public class Keyword {
         this.personId = personId;
     }
 
-    public String getKeyword() {
-        return keyword;
+    public String getKeywordName() {
+        return keywordName;
     }
 
-    public void setKeyword(String keyword) {
-        this.keyword = keyword;
+    public void setKeywordName(String keywordName) {
+        this.keywordName = keywordName;
     }
 }
