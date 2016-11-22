@@ -15,7 +15,7 @@ public class FakeKeywordRepository implements IKeywordRepository {
     }
 
     @Override
-    public long createNewKeywordByGroup(long personId, String keywordName, long groupId) {
+    public long createNewKeywordByGroup(long personId, String keyword, long groupId) {
         return 150;
     }
 }

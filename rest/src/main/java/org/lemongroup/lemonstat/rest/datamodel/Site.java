@@ -5,14 +5,14 @@ package org.lemongroup.lemonstat.rest.datamodel;
  */
 public class Site {
     private long id;
-    private String siteName;
+    private String site;
 
     public Site() {
     }
 
-    public Site(long id, String siteName) {
+    public Site(long id, String site) {
         this.id = id;
-        this.siteName = siteName;
+        this.site = site;
     }
 
     public long getId() {
@@ -23,11 +23,11 @@ public class Site {
         this.id = id;
     }
 
-    public String getSiteName() {
-        return siteName;
+    public String getSite() {
+        return site;
     }
 
-    public void setSiteName(String siteName) {
-        this.siteName = siteName;
+    public void setSite(String site) {
+        this.site = site;
     }
 }

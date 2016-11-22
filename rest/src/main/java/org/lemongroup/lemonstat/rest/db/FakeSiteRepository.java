@@ -15,7 +15,7 @@ public class FakeSiteRepository implements ISiteRepository {
     }
 
     @Override
-    public long createNewSiteByGroup(String siteName, long groupId) {
+    public long createNewSiteByGroup(String site, long groupId) {
         return 670;
     }
 }

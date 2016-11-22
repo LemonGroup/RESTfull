@@ -121,13 +121,14 @@ public class AdminController {
     }
 
     //Create new keyword to person
-    @RequestMapping(value = "/catalog/keywords/{person}", method = RequestMethod.POST)
+    @RequestMapping(value = "/catalog/keywords", method = RequestMethod.POST)
     public ResponseEntity<Keyword> postNewKeywordToPerson(
             @RequestHeader(value = "Auth-Token") String token,
             @RequestBody Keyword keyword) {
         AccountHandler ah = AccountHandler.getInstance();
         IKeywordRepository keywordRepository = FakeKeywordRepository.getInstance();
-        long keywordId = keywordRepository.createNewKeywordByGroup(keyword.getPersonId(), keyword.getKeywordName(), ah.getGroupIdByToken(token));
+        long keywordId = keywordRepository.createNewKeywordByGroup(keyword.getPersonId(), keyword.getKeyword(), ah.getGroupIdByToken(token));
+	System.out.println(keyword.getKeyword());
         keyword.setId(keywordId);
         //Do something with repository
         return new ResponseEntity<Keyword>(keyword, HttpStatus.OK);
@@ -179,7 +180,7 @@ public class AdminController {
             @RequestBody Site site) {
         AccountHandler ah = AccountHandler.getInstance();
         ISiteRepository siteRepository = FakeSiteRepository.getInstance();
-        long siteId = siteRepository.createNewSiteByGroup(site.getSiteName(), ah.getGroupIdByToken(token));
+        long siteId = siteRepository.createNewSiteByGroup(site.getSite(), ah.getGroupIdByToken(token));
         site.setId(siteId);
         //Do something with repository
         return new ResponseEntity<Site>(site, HttpStatus.OK);
