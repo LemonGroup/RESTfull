@@ -18,4 +18,14 @@ public class FakeKeywordRepository implements IKeywordRepository {
     public long createNewKeywordByGroup(long personId, String keyword, long groupId) {
         return 150;
     }
+
+    @Override
+    public boolean updateKeywordByGroup(long keywordId, String newKeyword, long groupId) {
+	return true;
+    }
+
+    @Override
+    public boolean deleteKeywordByGroup(long keywordId, long groupId){
+	return true;
+    }
 }

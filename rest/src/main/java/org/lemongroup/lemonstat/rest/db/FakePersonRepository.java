@@ -19,4 +19,12 @@ public class FakePersonRepository implements IPersonRepository {
 //	System.out.println("Message from FakePersonRepository: newPerson " + personName + " GroupId " + groupId);
         return 345;
     }
+    @Override
+    public boolean updatePersonByGroup(long personId, String newPersonName, long groupId) {
+        return true;
+    }
+    @Override
+    public boolean deletePersonByGroup(long personId, long groupId) {
+        return true;
+    }
 }

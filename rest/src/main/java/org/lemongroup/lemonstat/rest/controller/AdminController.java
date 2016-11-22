@@ -86,22 +86,35 @@ public class AdminController {
     }
 
     //Update person name
-    @RequestMapping(value = "/catalog/persons/{personName}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/catalog/persons", method = RequestMethod.PUT)
     public ResponseEntity<Person> updatePerson(
             @RequestHeader(value = "Auth-Token") String token,
-            @PathVariable String personName,
             @RequestBody Person newPerson) {
-        //Do something with repository
-        return new ResponseEntity<Person>(newPerson, HttpStatus.OK);
+        AccountHandler ah = AccountHandler.getInstance();
+        IPersonRepository pr = FakePersonRepository.getInstance();
+        boolean updated = pr.updatePersonByGroup(newPerson.getId(), newPerson.getPersonName(), ah.getGroupIdByToken(token));
+
+	if(updated) { 
+	    return new ResponseEntity<Person>(newPerson, HttpStatus.OK);
+	}
+	return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-/*
+
     //Delete person
-    @RequestMapping(value = "/catalog/persons/{personName}", method = RequestMethod.DELETE)
-    public ResponseEntity<Person> deletePerson(@PathVariable String personName) {
-	//Do something with repository
-        return new ResponseEntity<Person>(new Person(personName), HttpStatus.OK);
+    @RequestMapping(value = "/catalog/persons/{id}", method = RequestMethod.DELETE)
+    public ResponseEntity deletePerson(
+            @RequestHeader(value = "Auth-Token") String token,
+	    @PathVariable long id ) {
+        AccountHandler ah = AccountHandler.getInstance();
+        IPersonRepository pr = FakePersonRepository.getInstance();
+        //boolean updated = pr.deletePersonByGroup(Long.parseLong(id), ah.getGroupIdByToken(token));
+        boolean updated = pr.deletePersonByGroup(id, ah.getGroupIdByToken(token));
+
+	if(updated) { 
+	    return new ResponseEntity<>(HttpStatus.OK);
+	}
+	return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-*/
 
     /**
      * Keywords CRUD methods
@@ -135,25 +148,34 @@ public class AdminController {
     }
 
     //Update keyword by person
-    @RequestMapping(value = "/catalog/keywords/{person}/{keyword}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/catalog/keywords", method = RequestMethod.PUT)
     public ResponseEntity<Keyword> updateKeywordByPerson(
             @RequestHeader(value = "Auth-Token") String token,
-            @PathVariable String person,
-            @PathVariable String keyword,
             @RequestBody Keyword newKeyword) {
-        //Do something with repository
-        return new ResponseEntity<Keyword>(newKeyword, HttpStatus.OK);
+        AccountHandler ah = AccountHandler.getInstance();
+        IKeywordRepository keywordRepository = FakeKeywordRepository.getInstance();
+        boolean updated = keywordRepository.updateKeywordByGroup(newKeyword.getId(), newKeyword.getKeyword(), ah.getGroupIdByToken(token));
+	if(updated) { 
+	    return new ResponseEntity<Keyword>(newKeyword, HttpStatus.OK);
+	}
+	return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-/*
+
     //Delete keyword by person
-    @RequestMapping(value = "/catalog/keywords/{person}/{keyword}", method = RequestMethod.DELETE)
-    public ResponseEntity<Keyword> deleteKeywordForPerson(
-	    @PathVariable String person, 
-	    @PathVariable String keyword) {
-	//Do something with repository
-        return new ResponseEntity<Keyword>(new Keyword(keyword), HttpStatus.OK);
+    @RequestMapping(value = "/catalog/keywords/{id}", method = RequestMethod.DELETE)
+    public ResponseEntity<?> deleteKeyword(
+            @RequestHeader(value = "Auth-Token") String token,
+	    @PathVariable long id ) {
+        AccountHandler ah = AccountHandler.getInstance();
+        IKeywordRepository pr = FakeKeywordRepository.getInstance();
+        boolean deleted = pr.deleteKeywordByGroup(id, ah.getGroupIdByToken(token));
+
+	if(deleted) { 
+	    return new ResponseEntity<>(HttpStatus.OK);
+	}
+	return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-*/
+
 
     /**
      * Sites CRUD methods
@@ -187,20 +209,31 @@ public class AdminController {
     }
 
     //Update site name
-    @RequestMapping(value = "/catalog/sites/{site}/", method = RequestMethod.PUT)
+    @RequestMapping(value = "/catalog/sites", method = RequestMethod.PUT)
     public ResponseEntity<Site> updateSite(
             @RequestHeader(value = "Auth-Token") String token,
-            @PathVariable String site,
             @RequestBody Site newSite) {
-        //Do something with repository
-        return new ResponseEntity<Site>(newSite, HttpStatus.OK);
+        AccountHandler ah = AccountHandler.getInstance();
+        ISiteRepository siteRepository = FakeSiteRepository.getInstance();
+        boolean updated = siteRepository.updateSiteByGroup(newSite.getId(), newSite.getSite(), ah.getGroupIdByToken(token));
+	if(updated) { 
+	    return new ResponseEntity<Site>(newSite, HttpStatus.OK);
+	}
+	return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-/*
+
     //Delete site
-    @RequestMapping(value = "/catalog/sites/{site}/", method = RequestMethod.DELETE)
-    public ResponseEntity<Site> deleteSite(@PathVariable String site) {
-	//Do something with repository
-        return new ResponseEntity<Site>(new Site(site), HttpStatus.OK);
+    @RequestMapping(value = "/catalog/sites/{id}", method = RequestMethod.DELETE)
+    public ResponseEntity<?> deleteSite(
+            @RequestHeader(value = "Auth-Token") String token,
+            @PathVariable long id) {
+        AccountHandler ah = AccountHandler.getInstance();
+        ISiteRepository pr = FakeSiteRepository.getInstance();
+        boolean deleted = pr.deleteSiteByGroup(id, ah.getGroupIdByToken(token));
+
+	if(deleted) { 
+	    return new ResponseEntity<>(HttpStatus.OK);
+	}
+	return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-*/
 }

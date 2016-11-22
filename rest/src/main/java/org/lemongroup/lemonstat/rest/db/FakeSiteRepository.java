@@ -18,4 +18,15 @@ public class FakeSiteRepository implements ISiteRepository {
     public long createNewSiteByGroup(String site, long groupId) {
         return 670;
     }
+
+    @Override
+    public boolean updateSiteByGroup(long siteId, String newSite, long groupId) {
+	return true;
+    }
+
+    @Override
+    public boolean deleteSiteByGroup(long siteId, long groupId) {
+	return true;
+    }
+    
 }
