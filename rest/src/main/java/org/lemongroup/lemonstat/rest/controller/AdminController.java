@@ -7,6 +7,8 @@ import org.lemongroup.lemonstat.rest.datamodel.Keyword;
 import org.lemongroup.lemonstat.rest.datamodel.Site;
 import org.lemongroup.lemonstat.rest.datamodel.CatalogList;
 import org.lemongroup.lemonstat.rest.datamodel.AuthResponse;
+import org.lemongroup.lemonstat.rest.datamodel.OverMentionStatItem;
+import org.lemongroup.lemonstat.rest.datamodel.DailyStat;
 
 import java.util.Map;
 import java.util.List;
@@ -235,5 +237,36 @@ public class AdminController {
 	    return new ResponseEntity<>(HttpStatus.OK);
 	}
 	return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+    /**
+     *Get statistic methods
+     */
+    @RequestMapping(value = "/stat/over_stat", method = RequestMethod.GET)
+    public ResponseEntity<List<OverMentionStatItem>> getOverStat(
+            @RequestHeader(value = "Auth-Token") String token,
+	    @RequestParam(value = "siteId") long siteId) {
+
+        AccountHandler ah = AccountHandler.getInstance();
+	List<OverMentionStatItem> list = new StatRepository().getOverStatBySiteIdByGroup(siteId, ah.getGroupIdByToken(token));
+
+        if (list.size() == 0) {
+	    System.out.println("NO CONTENT");
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<List<OverMentionStatItem>>(list, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/stat/daily_stat", method = RequestMethod.GET)
+    public ResponseEntity<List<DailyStat>> getDailyStat(
+            @RequestHeader(value = "Auth-Token") String token,
+	    @RequestParam Map<String, String> requestParams) {
+
+        AccountHandler ah = AccountHandler.getInstance();
+	List<DailyStat> list = new StatRepository().getDaylyStatByParamsByGroup(requestParams, ah.getGroupIdByToken(token));
+
+        if (list.size() == 0) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(list, HttpStatus.OK);
     }
 }

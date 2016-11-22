@@ -12,50 +12,33 @@ import java.util.ArrayList;
 public class StatRepository {
 
 
-    public List<OverMentionStatItem> getOverStatBySite(String site) {
+    public List<OverMentionStatItem> getOverStatBySiteIdByGroup(long siteId, long groupId) {
         //Fake data
         List<OverMentionStatItem> list = new ArrayList<>();
-        if (site.equals("lenta.ru")) {
+        if (siteId == 323 && groupId == 3) {
             list.add(new OverMentionStatItem("Путин", 100000));
             list.add(new OverMentionStatItem("Медведев", 50000));
             list.add(new OverMentionStatItem("Навальный", 25000));
-        } else if (site.equals("rbc.ru")) {
+        } else if (siteId == 324 && groupId == 3) {
             list.add(new OverMentionStatItem("Путин", 100005));
             list.add(new OverMentionStatItem("Медведев", 45000));
             list.add(new OverMentionStatItem("Навальный", 34000));
 	}
 	return list;
     }
-    public List<DailyStat> getDaylyStatByParams(Map<String,String> requestParams) {
+    public List<DailyStat> getDaylyStatByParamsByGroup(Map<String,String> requestParams, long groupId) {
 
 	//Fake datas, return just given dates
-        String site = requestParams.get("site");
-        String person = requestParams.get("person");
+        long siteId = Long.parseLong(requestParams.get("siteId"));
+        long personId = Long.parseLong(requestParams.get("personId"));
         String startDate = requestParams.get("start_date");
         String endDate = requestParams.get("end_date");
 
         List<DailyStat> list = new ArrayList<>();
-        if (site.equals("lenta.ru") && person.equalsIgnoreCase("Путин")) {
+        if (siteId == 344 && personId == 2342 && groupId == 3) {
             list.add(new DailyStat(startDate, 50));
             list.add(new DailyStat(endDate, 100));
-        } else if (site.equals("rbc.ru") && person.equalsIgnoreCase("Путин")) {
-            list.add(new DailyStat(startDate, 45));
-            list.add(new DailyStat(endDate, 88));
-        } else if (site.equals("lenta.ru") && person.equalsIgnoreCase("Медведев")) {
-            list.add(new DailyStat(startDate, 57));
-            list.add(new DailyStat(endDate, 94));
-        } else if (site.equals("rbc.ru") && person.equalsIgnoreCase("Медведев")) {
-            list.add(new DailyStat(startDate, 66));
-            list.add(new DailyStat(endDate, 91));
-        } else if (site.equals("lenta.ru") && person.equalsIgnoreCase("Навальный")) {
-            list.add(new DailyStat(startDate, 36));
-            list.add(new DailyStat(endDate, 79));
-        } else if (site.equals("rbc.ru") && person.equalsIgnoreCase("Навальный")) {
-            list.add(new DailyStat(startDate, 45));
-            list.add(new DailyStat(endDate, 110));
 	}
 	return list;
     }
 }
-
-
