@@ -2,9 +2,9 @@ package org.lemongroup.lemonstat.rest.db;
 
 import java.util.UUID;
 
-public class FakeAccountRepository implements IAccountRepository{
+public class DataAccountRepository implements IAccountRepository{
 
-    private static FakeAccountRepository instance;
+    private static DataAccountRepository instance;
     private static String FAKE_TOKEN = "this-is-fake-token";
     private static String FAKE_USER = "testuser";
     private static String FAKE_PASS = "testpass";
@@ -12,12 +12,12 @@ public class FakeAccountRepository implements IAccountRepository{
     private static long FAKE_GID = 3;
     private static byte FAKE_PRIV = 2;
 
-    private FakeAccountRepository() {
+    private DataAccountRepository() {
     }
 
-    public static FakeAccountRepository getInstance(){
+    public static DataAccountRepository getInstance(){
 	if(instance == null){
-	    instance = new FakeAccountRepository();
+	    instance = new DataAccountRepository();
 	}
 	return instance;
     }

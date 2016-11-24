@@ -1,11 +1,24 @@
 package org.lemongroup.lemonstat.rest.datamodel;
 
+import org.hibernate.annotations.GenericGenerator;
+
+import javax.persistence.*;
+
 /**
  * Ключевое слово персоны
  */
+@Entity
+@Table(name = "keywords", uniqueConstraints = {@UniqueConstraint(columnNames = {"name", "personid"})})
 public class Keyword {
+
+    @Id
+    @GeneratedValue(generator = "increment")
+    @GenericGenerator(name = "increment", strategy = "increment")
     private long id;
+
+    @Column(name = "personid", nullable = false)
     private long personId;
+    @Column(name = "name", nullable = false)
     private String keyword;
 
     public Keyword() {
@@ -40,4 +53,5 @@ public class Keyword {
     public void setKeyword(String keyword) {
         this.keyword = keyword;
     }
+
 }

@@ -6,14 +6,16 @@ public class AuthResponse {
     private long groupId;
     private byte privilege;
 
-    public AuthResponse(){
+    public AuthResponse() {
     }
-    public AuthResponse(String token, long groupId, byte privilege){
 
-	this.token = token;
-	this.groupId = groupId;
-	this.privilege = privilege;
+    public AuthResponse(String token, long groupId, byte privilege) {
+
+        this.token = token;
+        this.groupId = groupId;
+        this.privilege = privilege;
     }
+
     public String getToken() {
         return token;
     }
@@ -37,4 +39,4 @@ public class AuthResponse {
     public void setPrivilege(byte privilege) {
         this.privilege = privilege;
     }
- }
+}

@@ -1,6 +1,8 @@
 package org.lemongroup.lemonstat.rest.controller;
 
 import org.lemongroup.lemonstat.rest.db.*;
+import org.lemongroup.lemonstat.rest.service.KeywordService;
+import org.lemongroup.lemonstat.rest.service.PersonService;
 import org.lemongroup.lemonstat.rest.utils.AccountHandler;
 import org.lemongroup.lemonstat.rest.datamodel.Person;
 import org.lemongroup.lemonstat.rest.datamodel.Keyword;
@@ -14,6 +16,7 @@ import java.util.Map;
 import java.util.List;
 import java.util.ArrayList;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,6 +33,13 @@ public class AdminController {
      * Auth methods
      */
     //GET persons
+
+    @Autowired
+    KeywordService keywordService;
+
+    @Autowired
+    PersonService personService;
+
     @RequestMapping(value = "/user/auth", method = RequestMethod.GET)
     public ResponseEntity<AuthResponse> auth(
             @RequestParam Map<String, String> authParams) {
@@ -80,8 +90,7 @@ public class AdminController {
             @RequestHeader(value = "Auth-Token") String token,
             @RequestBody Person person) {
         AccountHandler ah = AccountHandler.getInstance();
-        IPersonRepository pr = FakePersonRepository.getInstance();
-        long personId = pr.createNewPersonByGroup(person.getPersonName(), ah.getGroupIdByToken(token));
+        long personId = personService.createNewPersonByGroup(person.getPersonName(), ah.getGroupIdByToken(token));
         person.setId(personId);
         //Do something with repository
         return new ResponseEntity<Person>(person, HttpStatus.OK);
@@ -93,8 +102,7 @@ public class AdminController {
             @RequestHeader(value = "Auth-Token") String token,
             @RequestBody Person newPerson) {
         AccountHandler ah = AccountHandler.getInstance();
-        IPersonRepository pr = FakePersonRepository.getInstance();
-        boolean updated = pr.updatePersonByGroup(newPerson.getId(), newPerson.getPersonName(), ah.getGroupIdByToken(token));
+        boolean updated = personService.updatePersonByGroup(newPerson.getId(), newPerson.getPersonName(), ah.getGroupIdByToken(token));
 
 	if(updated) { 
 	    return new ResponseEntity<Person>(newPerson, HttpStatus.OK);
@@ -108,9 +116,8 @@ public class AdminController {
             @RequestHeader(value = "Auth-Token") String token,
 	    @PathVariable long id ) {
         AccountHandler ah = AccountHandler.getInstance();
-        IPersonRepository pr = FakePersonRepository.getInstance();
         //boolean updated = pr.deletePersonByGroup(Long.parseLong(id), ah.getGroupIdByToken(token));
-        boolean updated = pr.deletePersonByGroup(id, ah.getGroupIdByToken(token));
+        boolean updated = personService.deletePersonByGroup(id, ah.getGroupIdByToken(token));
 
 	if(updated) { 
 	    return new ResponseEntity<>(HttpStatus.OK);
@@ -141,8 +148,7 @@ public class AdminController {
             @RequestHeader(value = "Auth-Token") String token,
             @RequestBody Keyword keyword) {
         AccountHandler ah = AccountHandler.getInstance();
-        IKeywordRepository keywordRepository = FakeKeywordRepository.getInstance();
-        long keywordId = keywordRepository.createNewKeywordByGroup(keyword.getPersonId(), keyword.getKeyword(), ah.getGroupIdByToken(token));
+        long keywordId = keywordService.createNewKeywordByGroup(keyword.getPersonId(), keyword.getKeyword(), ah.getGroupIdByToken(token));
 	System.out.println(keyword.getKeyword());
         keyword.setId(keywordId);
         //Do something with repository
@@ -155,8 +161,7 @@ public class AdminController {
             @RequestHeader(value = "Auth-Token") String token,
             @RequestBody Keyword newKeyword) {
         AccountHandler ah = AccountHandler.getInstance();
-        IKeywordRepository keywordRepository = FakeKeywordRepository.getInstance();
-        boolean updated = keywordRepository.updateKeywordByGroup(newKeyword.getId(), newKeyword.getKeyword(), ah.getGroupIdByToken(token));
+        boolean updated = keywordService.updateKeywordByGroup(newKeyword.getId(), newKeyword.getKeyword(), ah.getGroupIdByToken(token));
 	if(updated) { 
 	    return new ResponseEntity<Keyword>(newKeyword, HttpStatus.OK);
 	}
@@ -169,15 +174,13 @@ public class AdminController {
             @RequestHeader(value = "Auth-Token") String token,
 	    @PathVariable long id ) {
         AccountHandler ah = AccountHandler.getInstance();
-        IKeywordRepository pr = FakeKeywordRepository.getInstance();
-        boolean deleted = pr.deleteKeywordByGroup(id, ah.getGroupIdByToken(token));
+        boolean deleted = keywordService.deleteKeywordByGroup(id, ah.getGroupIdByToken(token));
 
 	if(deleted) { 
 	    return new ResponseEntity<>(HttpStatus.OK);
 	}
 	return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-
 
     /**
      * Sites CRUD methods

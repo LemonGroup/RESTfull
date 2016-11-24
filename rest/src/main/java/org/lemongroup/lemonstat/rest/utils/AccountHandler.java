@@ -1,12 +1,10 @@
 package org.lemongroup.lemonstat.rest.utils;
 
 import org.lemongroup.lemonstat.rest.datamodel.AuthResponse;
-import org.lemongroup.lemonstat.rest.db.FakeAccountRepository;
+import org.lemongroup.lemonstat.rest.db.DataAccountRepository;
 import org.lemongroup.lemonstat.rest.db.IAccountRepository;
 
 import java.util.Map;
-import java.util.List;
-import java.util.ArrayList;
 
 public class AccountHandler {
 
@@ -19,7 +17,7 @@ public class AccountHandler {
     public static AccountHandler getInstance() {
         if (instance == null) {
             instance = new AccountHandler();
-            accountRepo = FakeAccountRepository.getInstance();
+            accountRepo = DataAccountRepository.getInstance();
         }
         return instance;
     }

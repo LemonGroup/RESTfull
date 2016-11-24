@@ -3,11 +3,14 @@ package org.lemongroup.lemonstat.rest.datamodel;
 /**
  * Represents an instance of a person.
  */
+
 public class Person {
+
     private long id;
     private String personName;
 
     public Person() {
+
     }
 
     public Person(long id, String personName) {
@@ -30,4 +33,5 @@ public class Person {
     public void setPersonName(String personName) {
         this.personName = personName;
     }
+
 }
