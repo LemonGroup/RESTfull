@@ -15,6 +15,7 @@ import org.lemongroup.lemonstat.rest.datamodel.DailyStat;
 import java.util.Map;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Collection;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -73,15 +74,19 @@ public class AdminController {
      */
     //GET persons
     @RequestMapping(value = "/catalog/persons", method = RequestMethod.GET)
-    public ResponseEntity<List<Person>> getAllPersons(
+    //public ResponseEntity<List<Person>> getAllPersons(
+    public ResponseEntity<?> getAllPersons(
             @RequestHeader(value = "Auth-Token") String token) {
         AccountHandler ah = AccountHandler.getInstance();
         long groupId = ah.getGroupIdByToken(token);
-        List<Person> list = new CatalogRepository().getAllPersons(groupId);
+	Collection list = personService.getAllPersonsByGroup(groupId);
+        //List<Person> list = new CatalogRepository().getAllPersons(groupId);
+	System.out.println(personService.getAllPersonsByGroup(groupId));
         if (list.size() == 0) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
-        return new ResponseEntity<List<Person>>(list, HttpStatus.OK);
+        //return new ResponseEntity<List<Person>>(list, HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     //Create new person

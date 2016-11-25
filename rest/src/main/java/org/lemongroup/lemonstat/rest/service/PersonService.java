@@ -4,11 +4,17 @@ import org.lemongroup.lemonstat.rest.db.IPersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
+
 @Service
 public class PersonService {
 
     @Autowired
     IPersonRepository iPersonRepository;
+
+    public Collection getAllPersonsByGroup(long groupId){
+       return iPersonRepository.getAllPersonsByGroup(groupId);
+    }
 
     public long createNewPersonByGroup(String personName, long groupId){
        return iPersonRepository.createNewPersonByGroup(personName,groupId);

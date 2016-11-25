@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
+
 @Repository
 @Transactional
 public class FakePersonRepository implements IPersonRepository {
@@ -17,6 +19,12 @@ public class FakePersonRepository implements IPersonRepository {
     @Autowired
     public FakePersonRepository(SessionFactory sessionFactory){
         this.sessionFactory = sessionFactory;
+    }
+
+    @Override
+    public Collection getAllPersonsByGroup(long groupId) {
+        Session session = sessionFactory.getCurrentSession();
+	return session.createQuery("from org.lemongroup.lemonstat.rest.datamodel.PersonDTO").list();
     }
 
     @Override
