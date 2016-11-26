@@ -20,11 +20,19 @@ public class AccountService {
     public long createNewAccountByGroup(Account account, long groupId){
        return iAccountRepository.createNewAccountByGroup(account,groupId);
     }
-/*
-    public boolean updateAccountByGroup(long personId, String newAccountName, long groupId) {
-        return iAccountRepository.updateAccountByGroup(personId,newAccountName,groupId);
+
+    public boolean updateAccountPrivilegeByGroup(long personId, byte newPrivilege, long groupId) {
+        return iAccountRepository.updateAccountPrivilegeByGroup(personId,newPrivilege,groupId);
     }
-*/
+
+    public boolean updateAccountMailByGroup(long personId, String newMail, long groupId) {
+        return iAccountRepository.updateAccountMailByGroup(personId,newMail,groupId);
+    }
+
+    public boolean updateAccountPasswordByGroup(long personId, String newPassword, long groupId) {
+        return iAccountRepository.updateAccountPasswordByGroup(personId,newPassword,groupId);
+    }
+
     public boolean deleteAccountByGroup(long accountId, long groupId) {
         return iAccountRepository.deleteAccountByGroup(accountId,groupId);
     }

@@ -105,7 +105,54 @@ public class DataAccountRepository implements IAccountRepository{
 	return account.getId();
     }
 
+    @Override
     public boolean deleteAccountByGroup(long accountId, long groupId) {
-	return true;
+        Session session =  sessionFactory.getCurrentSession();
+        Query query = session.createQuery("DELETE Account " +
+                " WHERE id = :id " +
+                "AND groupId = :groupId");
+        query.setParameter("id", accountId);
+        query.setParameter("groupId", groupId);
+        int result = query.executeUpdate();
+        return result == 1;
+    }
+
+    @Override
+    public boolean updateAccountPrivilegeByGroup(long accountId, byte newPrivilege, long groupId){
+        Session session = sessionFactory.getCurrentSession(); 
+	Query query = session.createQuery("UPDATE Account " +
+		"SET privilege = :privilege WHERE id = :id " +
+		"AND groupId = :groupId");
+	query.setParameter("privilege", newPrivilege);
+	query.setParameter("id", accountId);
+	query.setParameter("groupId", groupId);
+	int result = query.executeUpdate();
+	return result == 1;
+    }
+
+    @Override
+    public boolean updateAccountMailByGroup(long accountId, String newMail, long groupId){
+        Session session = sessionFactory.getCurrentSession(); 
+	Query query = session.createQuery("UPDATE Account " +
+		"SET email = :email WHERE id = :id " +
+		"AND groupId = :groupId");
+	query.setParameter("email", newMail);
+	query.setParameter("id", accountId);
+	query.setParameter("groupId", groupId);
+	int result = query.executeUpdate();
+	return result == 1;
+    }
+
+    @Override
+    public boolean updateAccountPasswordByGroup(long accountId, String newPassword, long groupId){
+        Session session = sessionFactory.getCurrentSession(); 
+	Query query = session.createQuery("UPDATE Account " +
+		"SET password = :password WHERE id = :id " +
+		"AND groupId = :groupId");
+	query.setParameter("password", newPassword);
+	query.setParameter("id", accountId);
+	query.setParameter("groupId", groupId);
+	int result = query.executeUpdate();
+	return result == 1;
     }
 }

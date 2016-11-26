@@ -84,10 +84,57 @@ public class AdminController {
             @RequestHeader(value = "Auth-Token") String token,
             @RequestBody Account account) {
         AccountHandler ah = AccountHandler.getInstance();
-	System.out.println(account.getPassword());
         long accountId = accountService.createNewAccountByGroup(account, ah.getGroupIdByToken(token));
         account.setId(accountId);
         return new ResponseEntity<Account>(account, HttpStatus.OK);
+    }
+    //Update account privilege
+    @RequestMapping(value = "/catalog/accounts/privilege", method = RequestMethod.PUT)
+    public ResponseEntity updateAccountPrivilege(
+            @RequestHeader(value = "Auth-Token") String token,
+            @RequestBody Account newAccount) {
+        AccountHandler ah = AccountHandler.getInstance();
+        boolean updated = accountService.updateAccountPrivilegeByGroup(newAccount.getId(), newAccount.getPrivilege(), ah.getGroupIdByToken(token));
+	if(updated) { 
+	    return new ResponseEntity(HttpStatus.OK);
+	}
+	return new ResponseEntity(HttpStatus.NO_CONTENT);
+    }
+    //Update account email
+    @RequestMapping(value = "/catalog/accounts/email", method = RequestMethod.PUT)
+    public ResponseEntity updateAccountMail(
+            @RequestHeader(value = "Auth-Token") String token,
+            @RequestBody Account newAccount) {
+        AccountHandler ah = AccountHandler.getInstance();
+        boolean updated = accountService.updateAccountMailByGroup(newAccount.getId(), newAccount.getEmail(), ah.getGroupIdByToken(token));
+	if(updated) { 
+	    return new ResponseEntity(HttpStatus.OK);
+	}
+	return new ResponseEntity(HttpStatus.NO_CONTENT);
+    }
+    //Update account password
+    @RequestMapping(value = "/catalog/accounts/password", method = RequestMethod.PUT)
+    public ResponseEntity updateAccountPassword(
+            @RequestHeader(value = "Auth-Token") String token,
+            @RequestBody Account newAccount) {
+        AccountHandler ah = AccountHandler.getInstance();
+        boolean updated = accountService.updateAccountPasswordByGroup(newAccount.getId(), newAccount.getPassword(), ah.getGroupIdByToken(token));
+	if(updated) { 
+	    return new ResponseEntity(HttpStatus.OK);
+	}
+	return new ResponseEntity(HttpStatus.NO_CONTENT);
+    }
+    //Delete account
+    @RequestMapping(value = "/catalog/accounts/{id}", method = RequestMethod.DELETE)
+    public ResponseEntity deleteAccount(
+            @RequestHeader(value = "Auth-Token") String token,
+	    @PathVariable long id) {
+        AccountHandler ah = AccountHandler.getInstance();
+        boolean isDeleted = accountService.deleteAccountByGroup(id, ah.getGroupIdByToken(token));
+	if(isDeleted) { 
+	    return new ResponseEntity(HttpStatus.OK);
+	}
+	return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
 

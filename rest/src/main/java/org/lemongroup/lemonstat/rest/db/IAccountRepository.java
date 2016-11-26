@@ -13,4 +13,7 @@ public interface IAccountRepository {
     public Collection getAllAccountsByGroup(long groupId);
     public long createNewAccountByGroup(Account account, long groupId);
     public boolean deleteAccountByGroup(long accountId, long groupId);
+    public boolean updateAccountPrivilegeByGroup(long personId, byte newPrivilege, long groupId);
+    public boolean updateAccountMailByGroup(long personId, String newMail, long groupId);
+    public boolean updateAccountPasswordByGroup(long personId, String newPassword, long groupId);
 }
