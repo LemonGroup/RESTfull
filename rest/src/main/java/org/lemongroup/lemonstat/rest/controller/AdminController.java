@@ -5,6 +5,7 @@ import org.lemongroup.lemonstat.rest.service.KeywordService;
 import org.lemongroup.lemonstat.rest.service.PersonService;
 import org.lemongroup.lemonstat.rest.service.AccountService;
 import org.lemongroup.lemonstat.rest.utils.AccountHandler;
+import org.lemongroup.lemonstat.rest.datamodel.Account;
 import org.lemongroup.lemonstat.rest.datamodel.Person;
 import org.lemongroup.lemonstat.rest.datamodel.Keyword;
 import org.lemongroup.lemonstat.rest.datamodel.Site;
@@ -77,6 +78,18 @@ public class AdminController {
         }
         return new ResponseEntity<List<?>>(list, HttpStatus.OK);
     }
+    //Create new account
+    @RequestMapping(value = "/catalog/accounts", method = RequestMethod.POST)
+    public ResponseEntity<?> postNewAccount(
+            @RequestHeader(value = "Auth-Token") String token,
+            @RequestBody Account account) {
+        AccountHandler ah = AccountHandler.getInstance();
+	System.out.println(account.getPassword());
+        long accountId = accountService.createNewAccountByGroup(account, ah.getGroupIdByToken(token));
+        account.setId(accountId);
+        return new ResponseEntity<Account>(account, HttpStatus.OK);
+    }
+
 
     /**
      * Person CRUD methods

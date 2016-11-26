@@ -2,12 +2,14 @@ package org.lemongroup.lemonstat.rest.datamodel;
 
 import org.hibernate.annotations.GenericGenerator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "Accounts", uniqueConstraints = {@UniqueConstraint(columnNames = {"username","groupid"})})
-@JsonIgnoreProperties({"groupid"})
+@JsonIgnoreProperties({"groupId"})
 public class Account {
 
     @Id
@@ -52,10 +54,14 @@ public class Account {
         this.username = username;
     }
 
+    //Assymetric serialization. Don not serialize password in out JSON
+    @JsonIgnore
     public String getPassword() {
         return password;
     }
 
+    //But deserialize from input JSON
+    @JsonProperty
     public void setPassword(String password) {
         this.password = password;
     }
@@ -66,6 +72,14 @@ public class Account {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public long getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(long groupId) {
+        this.groupId = groupId;
     }
 
     public byte getPrivilege() {

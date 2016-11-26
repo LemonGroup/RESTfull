@@ -97,10 +97,12 @@ public class DataAccountRepository implements IAccountRepository{
 	return query.list();
     }
 
+    @Override
     public long  createNewAccountByGroup(Account account, long groupId){
 	Session session = sessionFactory.getCurrentSession();
-
-	return 0;
+	account.setGroupId(groupId);
+	sessionFactory.getCurrentSession().save(account);
+	return account.getId();
     }
 
     public boolean deleteAccountByGroup(long accountId, long groupId) {
