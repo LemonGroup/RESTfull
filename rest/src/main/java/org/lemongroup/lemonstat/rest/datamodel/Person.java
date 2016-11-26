@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "Persons", uniqueConstraints = {@UniqueConstraint(columnNames = {"name"})})
+@Table(name = "Persons", uniqueConstraints = {@UniqueConstraint(columnNames = {"name","groupid"})})
 @JsonIgnoreProperties({"groupId"})
 public class Person {
 

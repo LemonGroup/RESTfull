@@ -4,7 +4,9 @@ import org.lemongroup.lemonstat.rest.db.*;
 import org.lemongroup.lemonstat.rest.service.KeywordService;
 import org.lemongroup.lemonstat.rest.service.PersonService;
 import org.lemongroup.lemonstat.rest.service.SiteService;
+import org.lemongroup.lemonstat.rest.service.AccountService;
 import org.lemongroup.lemonstat.rest.utils.AccountHandler;
+import org.lemongroup.lemonstat.rest.datamodel.Account;
 import org.lemongroup.lemonstat.rest.datamodel.Person;
 import org.lemongroup.lemonstat.rest.datamodel.Keyword;
 import org.lemongroup.lemonstat.rest.datamodel.Site;
@@ -44,6 +46,9 @@ public class AdminController {
     @Autowired
     SiteService siteService;
 
+    @Autowired
+    AccountService accountService;
+
     @RequestMapping(value = "/user/auth", method = RequestMethod.GET)
     public ResponseEntity<AuthResponse> auth(
             @RequestParam Map<String, String> authParams) {
@@ -59,18 +64,82 @@ public class AdminController {
         }
     }
 
-    //Get all catalogs
-    @RequestMapping(value = "/catalog/catalogs", method = RequestMethod.GET)
-    public ResponseEntity<CatalogList> getAllCatalogs(
+    /**
+     * Account CRUD methods
+     */
+    //GET accounts
+    @RequestMapping(value = "/catalog/accounts", method = RequestMethod.GET)
+    public ResponseEntity<?> getAllAccounts(
             @RequestHeader(value = "Auth-Token") String token) {
+
         AccountHandler ah = AccountHandler.getInstance();
         long groupId = ah.getGroupIdByToken(token);
-        CatalogList list = new CatalogRepository().getAllCatalogsByGroupId(groupId);
-        if (list == null) {
+	System.out.println("groupId" + groupId);
+	List<?> list = (List)accountService.getAllAccountsByGroup(groupId);
+        if (list.size() == 0) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
-        return new ResponseEntity<CatalogList>(list, HttpStatus.OK);
+        return new ResponseEntity<List<?>>(list, HttpStatus.OK);
     }
+    //Create new account
+    @RequestMapping(value = "/catalog/accounts", method = RequestMethod.POST)
+    public ResponseEntity<?> postNewAccount(
+            @RequestHeader(value = "Auth-Token") String token,
+            @RequestBody Account account) {
+        AccountHandler ah = AccountHandler.getInstance();
+        long accountId = accountService.createNewAccountByGroup(account, ah.getGroupIdByToken(token));
+        account.setId(accountId);
+        return new ResponseEntity<Account>(account, HttpStatus.OK);
+    }
+    //Update account privilege
+    @RequestMapping(value = "/catalog/accounts/privilege", method = RequestMethod.PUT)
+    public ResponseEntity updateAccountPrivilege(
+            @RequestHeader(value = "Auth-Token") String token,
+            @RequestBody Account newAccount) {
+        AccountHandler ah = AccountHandler.getInstance();
+        boolean updated = accountService.updateAccountPrivilegeByGroup(newAccount.getId(), newAccount.getPrivilege(), ah.getGroupIdByToken(token));
+	if(updated) { 
+	    return new ResponseEntity(HttpStatus.OK);
+	}
+	return new ResponseEntity(HttpStatus.NO_CONTENT);
+    }
+    //Update account email
+    @RequestMapping(value = "/catalog/accounts/email", method = RequestMethod.PUT)
+    public ResponseEntity updateAccountMail(
+            @RequestHeader(value = "Auth-Token") String token,
+            @RequestBody Account newAccount) {
+        AccountHandler ah = AccountHandler.getInstance();
+        boolean updated = accountService.updateAccountMailByGroup(newAccount.getId(), newAccount.getEmail(), ah.getGroupIdByToken(token));
+	if(updated) { 
+	    return new ResponseEntity(HttpStatus.OK);
+	}
+	return new ResponseEntity(HttpStatus.NO_CONTENT);
+    }
+    //Update account password
+    @RequestMapping(value = "/catalog/accounts/password", method = RequestMethod.PUT)
+    public ResponseEntity updateAccountPassword(
+            @RequestHeader(value = "Auth-Token") String token,
+            @RequestBody Account newAccount) {
+        AccountHandler ah = AccountHandler.getInstance();
+        boolean updated = accountService.updateAccountPasswordByGroup(newAccount.getId(), newAccount.getPassword(), ah.getGroupIdByToken(token));
+	if(updated) { 
+	    return new ResponseEntity(HttpStatus.OK);
+	}
+	return new ResponseEntity(HttpStatus.NO_CONTENT);
+    }
+    //Delete account
+    @RequestMapping(value = "/catalog/accounts/{id}", method = RequestMethod.DELETE)
+    public ResponseEntity deleteAccount(
+            @RequestHeader(value = "Auth-Token") String token,
+	    @PathVariable long id) {
+        AccountHandler ah = AccountHandler.getInstance();
+        boolean isDeleted = accountService.deleteAccountByGroup(id, ah.getGroupIdByToken(token));
+	if(isDeleted) { 
+	    return new ResponseEntity(HttpStatus.OK);
+	}
+	return new ResponseEntity(HttpStatus.NO_CONTENT);
+    }
+
 
     /**
      * Person CRUD methods

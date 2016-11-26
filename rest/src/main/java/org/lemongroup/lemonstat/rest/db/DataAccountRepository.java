@@ -1,7 +1,19 @@
 package org.lemongroup.lemonstat.rest.db;
 
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.lemongroup.lemonstat.rest.datamodel.Account;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Collection;
+
 import java.util.UUID;
 
+@Repository
+@Transactional
 public class DataAccountRepository implements IAccountRepository{
 
     private static DataAccountRepository instance;
@@ -12,8 +24,16 @@ public class DataAccountRepository implements IAccountRepository{
     private static long FAKE_GID = 3;
     private static byte FAKE_PRIV = 2;
 
-    private DataAccountRepository() {
+    private SessionFactory sessionFactory;
+
+    @Autowired
+    public DataAccountRepository(SessionFactory sessionFactory){
+        this.sessionFactory = sessionFactory;
     }
+
+    private DataAccountRepository(){
+    }
+
 
     public static DataAccountRepository getInstance(){
 	if(instance == null){
@@ -67,5 +87,72 @@ public class DataAccountRepository implements IAccountRepository{
 	    return FAKE_GID;
 	}
 	return 0;
+    }
+
+    @Override
+    public Collection getAllAccountsByGroup(long groupId){
+        Session session = sessionFactory.getCurrentSession();
+	Query query = session.createQuery("from Account where groupid = :groupId");
+	query.setParameter("groupId", groupId);
+	return query.list();
+    }
+
+    @Override
+    public long  createNewAccountByGroup(Account account, long groupId){
+	Session session = sessionFactory.getCurrentSession();
+	account.setGroupId(groupId);
+	sessionFactory.getCurrentSession().save(account);
+	return account.getId();
+    }
+
+    @Override
+    public boolean deleteAccountByGroup(long accountId, long groupId) {
+        Session session =  sessionFactory.getCurrentSession();
+        Query query = session.createQuery("DELETE Account " +
+                " WHERE id = :id " +
+                "AND groupId = :groupId");
+        query.setParameter("id", accountId);
+        query.setParameter("groupId", groupId);
+        int result = query.executeUpdate();
+        return result == 1;
+    }
+
+    @Override
+    public boolean updateAccountPrivilegeByGroup(long accountId, byte newPrivilege, long groupId){
+        Session session = sessionFactory.getCurrentSession(); 
+	Query query = session.createQuery("UPDATE Account " +
+		"SET privilege = :privilege WHERE id = :id " +
+		"AND groupId = :groupId");
+	query.setParameter("privilege", newPrivilege);
+	query.setParameter("id", accountId);
+	query.setParameter("groupId", groupId);
+	int result = query.executeUpdate();
+	return result == 1;
+    }
+
+    @Override
+    public boolean updateAccountMailByGroup(long accountId, String newMail, long groupId){
+        Session session = sessionFactory.getCurrentSession(); 
+	Query query = session.createQuery("UPDATE Account " +
+		"SET email = :email WHERE id = :id " +
+		"AND groupId = :groupId");
+	query.setParameter("email", newMail);
+	query.setParameter("id", accountId);
+	query.setParameter("groupId", groupId);
+	int result = query.executeUpdate();
+	return result == 1;
+    }
+
+    @Override
+    public boolean updateAccountPasswordByGroup(long accountId, String newPassword, long groupId){
+        Session session = sessionFactory.getCurrentSession(); 
+	Query query = session.createQuery("UPDATE Account " +
+		"SET password = :password WHERE id = :id " +
+		"AND groupId = :groupId");
+	query.setParameter("password", newPassword);
+	query.setParameter("id", accountId);
+	query.setParameter("groupId", groupId);
+	int result = query.executeUpdate();
+	return result == 1;
     }
 }

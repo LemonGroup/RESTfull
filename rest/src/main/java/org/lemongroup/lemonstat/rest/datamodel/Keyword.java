@@ -8,7 +8,7 @@ import javax.persistence.*;
  * Ключевое слово персоны
  */
 @Entity
-@Table(name = "keywords", uniqueConstraints = {@UniqueConstraint(columnNames = {"name", "personid"})})
+@Table(name = "Keywords", uniqueConstraints = {@UniqueConstraint(columnNames = {"name", "personid"})})
 public class Keyword {
 
     @Id
