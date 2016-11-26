@@ -5,6 +5,8 @@ import org.lemongroup.lemonstat.rest.db.IKeywordRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
+
 @Service
 public class KeywordService {
 
@@ -15,8 +17,12 @@ public class KeywordService {
         this.keywordRepository = keywordRepository;
     }
 
+    public Collection getAllKeywords(long groupId) {
+	return keywordRepository.getAllKeywordsByGroup(groupId);
+    }
+
     public long createNewKeywordByGroup(long personId, String keyword, long groupId) {
-      return keywordRepository.createNewKeywordByGroup(personId,keyword,groupId);
+	return keywordRepository.createNewKeywordByGroup(personId,keyword,groupId);
     }
 
     public boolean updateKeywordByGroup(long keywordId, String newKeyword, long groupId) {

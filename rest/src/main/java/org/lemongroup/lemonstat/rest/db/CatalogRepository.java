@@ -15,25 +15,7 @@ import java.util.ArrayList;
 public class CatalogRepository {
 
     public CatalogList getAllCatalogsByGroupId(long groupId) {
-        //Fake data
-/*        if (groupId == 3) {
-            List<Site> slist = new ArrayList<>();
-        /*    slist.add(new Site(1, "lenta.ru"));
-            slist.add(new Site(2, "rbc.ru"));*/
-            List<Person> plist = new ArrayList<>();
-            plist.add(new Person(1, "Путин"));
-            plist.add(new Person(2, "Медведев"));
-            plist.add(new Person(3, "Навальный"));
-            List<Keyword> klist = new ArrayList<>();
-            klist.add(new Keyword(1, 1, "Путину"));
-            klist.add(new Keyword(2, 1, "Путина"));
-            klist.add(new Keyword(3, 2, "Медведева"));
-            klist.add(new Keyword(4, 2, "Медведеву"));
-            klist.add(new Keyword(5, 3, "Навальному"));
-            klist.add(new Keyword(6, 3, "Навального"));
-            return new CatalogList(slist, plist, klist);
-        }
-*/        return null;
+        return null;
     }
 
     public List<Person> getAllPersons(long groupId) {

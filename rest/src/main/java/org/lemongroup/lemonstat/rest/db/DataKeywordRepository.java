@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
-import java.util.List;
+import java.util.Collection;
 
 @Repository
 @Transactional
@@ -16,6 +16,16 @@ public class DataKeywordRepository implements IKeywordRepository {
 
     @Autowired
     private SessionFactory sessionFactory;
+
+    @Override
+    public Collection getAllKeywordsByGroup(long groupId) {
+	Session session = sessionFactory.getCurrentSession();
+	Query query = session.createQuery("from Keyword " +
+		"where personid in " + 
+		"(select p.id from Person p where groupid = :groupId)");
+	query.setParameter("groupId", groupId);
+	return query.list();
+    }
 
     @Override
     public long createNewKeywordByGroup(long personId, String keyword, long groupId) {
@@ -45,8 +55,4 @@ public class DataKeywordRepository implements IKeywordRepository {
         return result == 1;
     }
 
-    @Override
-    public List<Keyword> getAllKeywordsByGroup(long groupId) {
-        return null;
-    }
 }

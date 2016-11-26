@@ -190,7 +190,6 @@ public class AdminController {
             @RequestHeader(value = "Auth-Token") String token,
             @PathVariable long id) {
         AccountHandler ah = AccountHandler.getInstance();
-        //boolean updated = pr.deletePersonByGroup(Long.parseLong(id), ah.getGroupIdByToken(token));
         boolean updated = personService.deletePersonByGroup(id, ah.getGroupIdByToken(token));
 
         if (updated) {
@@ -204,16 +203,16 @@ public class AdminController {
      */
     //Get all keywords 
     @RequestMapping(value = "/catalog/keywords", method = RequestMethod.GET)
-    public ResponseEntity<List<Keyword>> getAllKeywords(
+    public ResponseEntity<?> getAllKeywords(
             @RequestHeader(value = "Auth-Token") String token) {
         AccountHandler ah = AccountHandler.getInstance();
         long groupId = ah.getGroupIdByToken(token);
-        List<Keyword> list = new CatalogRepository().getAllKeywords(groupId);
+        List<?> list = (List)keywordService.getAllKeywords(groupId);
         if (list.size() == 0) {
             System.out.println("NO CONTENT");
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
-        return new ResponseEntity<List<Keyword>>(list, HttpStatus.OK);
+        return new ResponseEntity<List<?>>(list, HttpStatus.OK);
     }
 
     //Create new keyword to person
@@ -261,16 +260,16 @@ public class AdminController {
      */
     //Get all sites
     @RequestMapping(value = "/catalog/sites", method = RequestMethod.GET)
-    public ResponseEntity<List<Site>> getAllSites(
+    public ResponseEntity<?> getAllSites(
             @RequestHeader(value = "Auth-Token") String token) {
         AccountHandler ah = AccountHandler.getInstance();
         long groupId = ah.getGroupIdByToken(token);
-        List<Site> list = new CatalogRepository().getAllSites(groupId);
+        List<?> list =  (List)siteService.getAllSites(groupId);
         if (list.size() == 0) {
             System.out.println("NO CONTENT");
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
-        return new ResponseEntity<List<Site>>(list, HttpStatus.OK);
+        return new ResponseEntity<List<?>>(list, HttpStatus.OK);
     }
 
     //
