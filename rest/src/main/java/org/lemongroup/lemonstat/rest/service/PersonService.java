@@ -27,5 +27,4 @@ public class PersonService {
     public boolean deletePersonByGroup(long personId, long groupId) {
         return iPersonRepository.deletePersonByGroup(personId,groupId);
     }
-
 }

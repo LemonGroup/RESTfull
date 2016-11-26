@@ -3,6 +3,7 @@ package org.lemongroup.lemonstat.rest.controller;
 import org.lemongroup.lemonstat.rest.db.*;
 import org.lemongroup.lemonstat.rest.service.KeywordService;
 import org.lemongroup.lemonstat.rest.service.PersonService;
+import org.lemongroup.lemonstat.rest.service.SiteService;
 import org.lemongroup.lemonstat.rest.utils.AccountHandler;
 import org.lemongroup.lemonstat.rest.datamodel.Person;
 import org.lemongroup.lemonstat.rest.datamodel.Keyword;
@@ -14,7 +15,6 @@ import org.lemongroup.lemonstat.rest.datamodel.DailyStat;
 
 import java.util.Map;
 import java.util.List;
-import java.util.ArrayList;
 import java.util.Collection;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +40,9 @@ public class AdminController {
 
     @Autowired
     PersonService personService;
+
+    @Autowired
+    SiteService siteService;
 
     @RequestMapping(value = "/user/auth", method = RequestMethod.GET)
     public ResponseEntity<AuthResponse> auth(
@@ -106,25 +109,25 @@ public class AdminController {
         AccountHandler ah = AccountHandler.getInstance();
         boolean updated = personService.updatePersonByGroup(newPerson.getId(), newPerson.getPersonName(), ah.getGroupIdByToken(token));
 
-	if(updated) { 
-	    return new ResponseEntity<Person>(newPerson, HttpStatus.OK);
-	}
-	return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        if (updated) {
+            return new ResponseEntity<Person>(newPerson, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     //Delete person
     @RequestMapping(value = "/catalog/persons/{id}", method = RequestMethod.DELETE)
     public ResponseEntity deletePerson(
             @RequestHeader(value = "Auth-Token") String token,
-	    @PathVariable long id ) {
+            @PathVariable long id) {
         AccountHandler ah = AccountHandler.getInstance();
         //boolean updated = pr.deletePersonByGroup(Long.parseLong(id), ah.getGroupIdByToken(token));
         boolean updated = personService.deletePersonByGroup(id, ah.getGroupIdByToken(token));
 
-	if(updated) { 
-	    return new ResponseEntity<>(HttpStatus.OK);
-	}
-	return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        if (updated) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     /**
@@ -151,7 +154,7 @@ public class AdminController {
             @RequestBody Keyword keyword) {
         AccountHandler ah = AccountHandler.getInstance();
         long keywordId = keywordService.createNewKeywordByGroup(keyword.getPersonId(), keyword.getKeyword(), ah.getGroupIdByToken(token));
-	System.out.println(keyword.getKeyword());
+        System.out.println(keyword.getKeyword());
         keyword.setId(keywordId);
         //Do something with repository
         return new ResponseEntity<Keyword>(keyword, HttpStatus.OK);
@@ -164,24 +167,24 @@ public class AdminController {
             @RequestBody Keyword newKeyword) {
         AccountHandler ah = AccountHandler.getInstance();
         boolean updated = keywordService.updateKeywordByGroup(newKeyword.getId(), newKeyword.getKeyword(), ah.getGroupIdByToken(token));
-	if(updated) { 
-	    return new ResponseEntity<Keyword>(newKeyword, HttpStatus.OK);
-	}
-	return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        if (updated) {
+            return new ResponseEntity<Keyword>(newKeyword, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     //Delete keyword by person
     @RequestMapping(value = "/catalog/keywords/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<?> deleteKeyword(
             @RequestHeader(value = "Auth-Token") String token,
-	    @PathVariable long id ) {
+            @PathVariable long id) {
         AccountHandler ah = AccountHandler.getInstance();
         boolean deleted = keywordService.deleteKeywordByGroup(id, ah.getGroupIdByToken(token));
 
-	if(deleted) { 
-	    return new ResponseEntity<>(HttpStatus.OK);
-	}
-	return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        if (deleted) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     /**
@@ -208,8 +211,7 @@ public class AdminController {
             @RequestHeader(value = "Auth-Token") String token,
             @RequestBody Site site) {
         AccountHandler ah = AccountHandler.getInstance();
-        ISiteRepository siteRepository = FakeSiteRepository.getInstance();
-        long siteId = siteRepository.createNewSiteByGroup(site.getSite(), ah.getGroupIdByToken(token));
+        long siteId = siteService.createNewSiteByGroup(site.getSite(), ah.getGroupIdByToken(token));
         site.setId(siteId);
         //Do something with repository
         return new ResponseEntity<Site>(site, HttpStatus.OK);
@@ -221,12 +223,11 @@ public class AdminController {
             @RequestHeader(value = "Auth-Token") String token,
             @RequestBody Site newSite) {
         AccountHandler ah = AccountHandler.getInstance();
-        ISiteRepository siteRepository = FakeSiteRepository.getInstance();
-        boolean updated = siteRepository.updateSiteByGroup(newSite.getId(), newSite.getSite(), ah.getGroupIdByToken(token));
-	if(updated) { 
-	    return new ResponseEntity<Site>(newSite, HttpStatus.OK);
-	}
-	return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        boolean updated = siteService.updateSiteByGroup(newSite.getId(), newSite.getSite(), ah.getGroupIdByToken(token));
+        if (updated) {
+            return new ResponseEntity<Site>(newSite, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     //Delete site
@@ -235,27 +236,27 @@ public class AdminController {
             @RequestHeader(value = "Auth-Token") String token,
             @PathVariable long id) {
         AccountHandler ah = AccountHandler.getInstance();
-        ISiteRepository pr = FakeSiteRepository.getInstance();
-        boolean deleted = pr.deleteSiteByGroup(id, ah.getGroupIdByToken(token));
+        boolean deleted = siteService.deleteSiteByGroup(id, ah.getGroupIdByToken(token));
 
-	if(deleted) { 
-	    return new ResponseEntity<>(HttpStatus.OK);
-	}
-	return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        if (deleted) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
     /**
-     *Get statistic methods
+     * Get statistic methods
      */
     @RequestMapping(value = "/stat/over_stat", method = RequestMethod.GET)
     public ResponseEntity<List<OverMentionStatItem>> getOverStat(
             @RequestHeader(value = "Auth-Token") String token,
-	    @RequestParam(value = "siteId") long siteId) {
+            @RequestParam(value = "siteId") long siteId) {
 
         AccountHandler ah = AccountHandler.getInstance();
-	List<OverMentionStatItem> list = new StatRepository().getOverStatBySiteIdByGroup(siteId, ah.getGroupIdByToken(token));
+        List<OverMentionStatItem> list = new StatRepository().getOverStatBySiteIdByGroup(siteId, ah.getGroupIdByToken(token));
 
         if (list.size() == 0) {
-	    System.out.println("NO CONTENT");
+            System.out.println("NO CONTENT");
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         return new ResponseEntity<List<OverMentionStatItem>>(list, HttpStatus.OK);
@@ -264,10 +265,10 @@ public class AdminController {
     @RequestMapping(value = "/stat/daily_stat", method = RequestMethod.GET)
     public ResponseEntity<List<DailyStat>> getDailyStat(
             @RequestHeader(value = "Auth-Token") String token,
-	    @RequestParam Map<String, String> requestParams) {
+            @RequestParam Map<String, String> requestParams) {
 
         AccountHandler ah = AccountHandler.getInstance();
-	List<DailyStat> list = new StatRepository().getDaylyStatByParamsByGroup(requestParams, ah.getGroupIdByToken(token));
+        List<DailyStat> list = new StatRepository().getDaylyStatByParamsByGroup(requestParams, ah.getGroupIdByToken(token));
 
         if (list.size() == 0) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
