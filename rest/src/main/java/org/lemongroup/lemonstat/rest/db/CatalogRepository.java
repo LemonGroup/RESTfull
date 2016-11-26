@@ -18,8 +18,8 @@ public class CatalogRepository {
         //Fake data
         if (groupId == 3) {
             List<Site> slist = new ArrayList<>();
-            slist.add(new Site(1, "lenta.ru"));
-            slist.add(new Site(2, "rbc.ru"));
+        /*    slist.add(new Site(1, "lenta.ru"));
+            slist.add(new Site(2, "rbc.ru"));*/
             List<Person> plist = new ArrayList<>();
             plist.add(new Person(1, "Путин"));
             plist.add(new Person(2, "Медведев"));
@@ -83,8 +83,8 @@ public class CatalogRepository {
         //Fake data
         if (groupId == 3) {
             List<Site> list = new ArrayList<>();
-            list.add(new Site(1, "lenta.ru"));
-            list.add(new Site(2, "rbc.ru"));
+         /*   list.add(new Site(1, "lenta.ru"));
+            list.add(new Site(2, "rbc.ru"));*/
             return list;
         }
         return null;

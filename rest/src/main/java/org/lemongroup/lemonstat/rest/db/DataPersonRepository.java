@@ -12,12 +12,12 @@ import java.util.Collection;
 
 @Repository
 @Transactional
-public class FakePersonRepository implements IPersonRepository {
+public class DataPersonRepository implements IPersonRepository {
 
     private SessionFactory sessionFactory;
 
     @Autowired
-    public FakePersonRepository(SessionFactory sessionFactory){
+    public DataPersonRepository(SessionFactory sessionFactory){
         this.sessionFactory = sessionFactory;
     }
 
