@@ -1,21 +1,34 @@
 package org.lemongroup.lemonstat.rest.datamodel;
 
-/**
- * Represents an instance of a person.
- */
+import org.hibernate.annotations.GenericGenerator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name = "Persons", uniqueConstraints = {@UniqueConstraint(columnNames = {"name"})})
+@JsonIgnoreProperties({"groupId"})
 public class Person {
 
+    @Id
+    @GeneratedValue(generator = "increment")
+    @GenericGenerator(name = "increment", strategy = "increment")
+    @Column(name = "id")
     private long id;
+
+    @Column(name = "name")
     private String personName;
 
-    public Person() {
+    @Column(name = "groupid")
+    private long groupId;
 
+    public Person(String personName, long groupId) {
+        this.personName = personName;
+        this.groupId = groupId;
     }
 
-    public Person(long id, String personName) {
-        this.id = id;
-        this.personName = personName;
+    public Person(){
+
     }
 
     public long getId() {
@@ -34,4 +47,11 @@ public class Person {
         this.personName = personName;
     }
 
+    public long getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(long groupId) {
+        this.groupId = groupId;
+    }
 }

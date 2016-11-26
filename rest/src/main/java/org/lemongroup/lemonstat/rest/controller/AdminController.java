@@ -74,19 +74,15 @@ public class AdminController {
      */
     //GET persons
     @RequestMapping(value = "/catalog/persons", method = RequestMethod.GET)
-    //public ResponseEntity<List<Person>> getAllPersons(
     public ResponseEntity<?> getAllPersons(
             @RequestHeader(value = "Auth-Token") String token) {
         AccountHandler ah = AccountHandler.getInstance();
         long groupId = ah.getGroupIdByToken(token);
-	Collection list = personService.getAllPersonsByGroup(groupId);
-        //List<Person> list = new CatalogRepository().getAllPersons(groupId);
-	System.out.println(personService.getAllPersonsByGroup(groupId));
+	List<?> list = (List)personService.getAllPersonsByGroup(groupId);
         if (list.size() == 0) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
-        //return new ResponseEntity<List<Person>>(list, HttpStatus.OK);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<List<?>>(list, HttpStatus.OK);
     }
 
     //Create new person
@@ -96,6 +92,7 @@ public class AdminController {
             @RequestBody Person person) {
         AccountHandler ah = AccountHandler.getInstance();
         long personId = personService.createNewPersonByGroup(person.getPersonName(), ah.getGroupIdByToken(token));
+	System.out.println(personId);
         person.setId(personId);
         //Do something with repository
         return new ResponseEntity<Person>(person, HttpStatus.OK);

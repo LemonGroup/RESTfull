@@ -16,7 +16,7 @@ public class CatalogRepository {
 
     public CatalogList getAllCatalogsByGroupId(long groupId) {
         //Fake data
-        if (groupId == 3) {
+/*        if (groupId == 3) {
             List<Site> slist = new ArrayList<>();
             slist.add(new Site(1, "lenta.ru"));
             slist.add(new Site(2, "rbc.ru"));
@@ -33,19 +33,19 @@ public class CatalogRepository {
             klist.add(new Keyword(6, 3, "Навального"));
             return new CatalogList(slist, plist, klist);
         }
-        return null;
+*/        return null;
     }
 
     public List<Person> getAllPersons(long groupId) {
         //Fake data
-        if (groupId == 3) {
+ /*       if (groupId == 3) {
             List<Person> list = new ArrayList<>();
             list.add(new Person(1, "Путин"));
             list.add(new Person(2, "Медведев"));
             list.add(new Person(3, "Навальный"));
             return list;
         }
-        return null;
+*/        return null;
     }
 
     public List<Keyword> getAllKeywordsByPerson(String person) {
