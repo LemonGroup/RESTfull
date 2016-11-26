@@ -9,7 +9,7 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "sites", uniqueConstraints = {@UniqueConstraint(columnNames = {"name"})})
+@Table(name = "sites", uniqueConstraints = {@UniqueConstraint(columnNames = {"name","groupid"})})
 @JsonIgnoreProperties({"groupId"})
 public class Site {
 
