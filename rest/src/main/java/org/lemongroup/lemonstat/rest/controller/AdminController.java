@@ -3,6 +3,7 @@ package org.lemongroup.lemonstat.rest.controller;
 import org.lemongroup.lemonstat.rest.db.*;
 import org.lemongroup.lemonstat.rest.service.KeywordService;
 import org.lemongroup.lemonstat.rest.service.PersonService;
+import org.lemongroup.lemonstat.rest.service.AccountService;
 import org.lemongroup.lemonstat.rest.utils.AccountHandler;
 import org.lemongroup.lemonstat.rest.datamodel.Person;
 import org.lemongroup.lemonstat.rest.datamodel.Keyword;
@@ -41,6 +42,9 @@ public class AdminController {
     @Autowired
     PersonService personService;
 
+    @Autowired
+    AccountService accountService;
+
     @RequestMapping(value = "/user/auth", method = RequestMethod.GET)
     public ResponseEntity<AuthResponse> auth(
             @RequestParam Map<String, String> authParams) {
@@ -56,17 +60,22 @@ public class AdminController {
         }
     }
 
-    //Get all catalogs
-    @RequestMapping(value = "/catalog/catalogs", method = RequestMethod.GET)
-    public ResponseEntity<CatalogList> getAllCatalogs(
+    /**
+     * Account CRUD methods
+     */
+    //GET accounts
+    @RequestMapping(value = "/catalog/accounts", method = RequestMethod.GET)
+    public ResponseEntity<?> getAllAccounts(
             @RequestHeader(value = "Auth-Token") String token) {
+
         AccountHandler ah = AccountHandler.getInstance();
         long groupId = ah.getGroupIdByToken(token);
-        CatalogList list = new CatalogRepository().getAllCatalogsByGroupId(groupId);
-        if (list == null) {
+	System.out.println("groupId" + groupId);
+	List<?> list = (List)accountService.getAllAccountsByGroup(groupId);
+        if (list.size() == 0) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
-        return new ResponseEntity<CatalogList>(list, HttpStatus.OK);
+        return new ResponseEntity<List<?>>(list, HttpStatus.OK);
     }
 
     /**
