@@ -3,10 +3,16 @@ package org.lemongroup.lemonstat.rest.utils;
 import org.lemongroup.lemonstat.rest.datamodel.AuthResponse;
 import org.lemongroup.lemonstat.rest.db.DataAccountRepository;
 import org.lemongroup.lemonstat.rest.db.IAccountRepository;
+import org.lemongroup.lemonstat.rest.service.AccountService;
+
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Map;
 
 public class AccountHandler {
+
+    @Autowired
+    AccountService accountService;
 
     private static AccountHandler instance;
     private static IAccountRepository accountRepo;
@@ -23,8 +29,10 @@ public class AccountHandler {
     }
 
     public boolean auth(Map<String, String> authParams) {
-        long uId = accountRepo.getUserIdByUserName(authParams.get("user"));
-        System.out.println("uid: " + uId);
+        long uId = accountService.getUserIdByUserName(authParams.get("user"));
+        //:w
+	//System.out.println("uid: " + uId);
+	/*
         if (uId == 0) {
             //No such user
             return false;
@@ -33,9 +41,10 @@ public class AccountHandler {
             if (authParams.get("pass").equals(accountRepo.getPasswordByUserId(uId))) {
                 return true;
             }
-        }
+        }*/
         return false;
     }
+
 
     public AuthResponse getAuthResponse(String user) {
         String token = accountRepo.getTokenByUser(user);

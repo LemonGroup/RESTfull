@@ -4,6 +4,8 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.lemongroup.lemonstat.rest.datamodel.Account;
+import org.lemongroup.lemonstat.rest.datamodel.Group;
+import org.lemongroup.lemonstat.rest.datamodel.Token;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,13 +44,6 @@ public class DataAccountRepository implements IAccountRepository{
 	return instance;
     }
 
-    public long getUserIdByUserName(String user) {
-	//TODO:Work with DB
-	if(user.equals(FAKE_USER)){
-	    return FAKE_UID;
-	}
-	return 0;
-    }
 
     public String getPasswordByUserId(long uId) { 
 	//TODO:Work with DB
@@ -88,6 +83,41 @@ public class DataAccountRepository implements IAccountRepository{
 	}
 	return 0;
     }
+    //Deprecated
+    @Override
+    public long getUserIdByUserName(String username) {
+        Session session = sessionFactory.getCurrentSession(); 
+	Query query = session.createQuery("select a.id from Account a " +
+		"WHERE username = :username");
+	query.setParameter("username", username);
+	long result = Long.parseLong(query.uniqueResult().toString());
+	return result; 
+    }
+
+    @Override
+    public String getPasswordByUserName(String username) {
+        Session session = sessionFactory.getCurrentSession(); 
+	Query query = session.createQuery("select a.password from Account a " +
+		"WHERE username = :username");
+	query.setParameter("username", username);
+	return query.uniqueResult().toString();
+    }
+
+    @Override
+    public boolean checkUsernameExists(String username){
+        Session session = sessionFactory.getCurrentSession();
+	Query query = session.createQuery("from Account where username = :username");
+	query.setParameter("username", username);
+	return query.list().size() != 0;
+    }
+
+    @Override
+    public boolean checkEmailExists(String email){
+        Session session = sessionFactory.getCurrentSession();
+	Query query = session.createQuery("from Account where email = :email");
+	query.setParameter("email", email);
+	return query.list().size() != 0;
+    }
 
     @Override
     public Collection getAllAccountsByGroup(long groupId){
@@ -103,6 +133,25 @@ public class DataAccountRepository implements IAccountRepository{
 	account.setGroupId(groupId);
 	sessionFactory.getCurrentSession().save(account);
 	return account.getId();
+    }
+
+    @Override
+    public String createNewTokenForUsername(String username){
+	Session session = sessionFactory.getCurrentSession();
+	Token token = new Token(UUID.randomUUID().toString());
+	long accountId = getUserIdByUserName(username);
+	token.setAccountId(accountId);
+	sessionFactory.getCurrentSession().save(token);
+	return token.getToken();
+    }
+
+    @Override
+    public long  createNewGroup(String groupname){
+	Session session = sessionFactory.getCurrentSession();
+	Group group = new Group();
+	group.setGroupname(groupname);
+	sessionFactory.getCurrentSession().save(group);
+	return group.getId();
     }
 
     @Override

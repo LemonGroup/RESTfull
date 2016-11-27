@@ -9,6 +9,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "tokens", uniqueConstraints = {@UniqueConstraint(columnNames = {"token"})})
+@JsonIgnoreProperties({"id","accountId"})
 public class Token {
 
     @Id

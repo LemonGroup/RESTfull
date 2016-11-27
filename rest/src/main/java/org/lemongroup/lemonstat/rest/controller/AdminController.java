@@ -7,6 +7,7 @@ import org.lemongroup.lemonstat.rest.service.SiteService;
 import org.lemongroup.lemonstat.rest.service.AccountService;
 import org.lemongroup.lemonstat.rest.utils.AccountHandler;
 import org.lemongroup.lemonstat.rest.datamodel.Account;
+import org.lemongroup.lemonstat.rest.datamodel.Token;
 import org.lemongroup.lemonstat.rest.datamodel.Person;
 import org.lemongroup.lemonstat.rest.datamodel.Keyword;
 import org.lemongroup.lemonstat.rest.datamodel.Site;
@@ -29,6 +30,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.dao.DataIntegrityViolationException;
 
 @RestController
 public class AdminController {
@@ -50,19 +52,68 @@ public class AdminController {
     AccountService accountService;
 
     @RequestMapping(value = "/user/auth", method = RequestMethod.GET)
-    public ResponseEntity<AuthResponse> auth(
+    public ResponseEntity<?> auth(
             @RequestParam Map<String, String> authParams) {
 
-        AccountHandler ah = AccountHandler.getInstance();
-        AuthResponse authResp;
-        //if auth success
-        if (ah.auth(authParams)) {
-            authResp = ah.getAuthResponse(authParams.get("user"));
-            return new ResponseEntity<AuthResponse>(authResp, HttpStatus.OK);
+	String username = authParams.get("user");
+	//Compare passwords
+	boolean isAuthenticated;
+	try {
+	    isAuthenticated = authParams.get("pass")
+		.equals(accountService
+			.getPasswordByUserName(username));
+	} catch (Exception e) {
+	    isAuthenticated = false;
+	}
+	System.out.println(isAuthenticated);
+        if (isAuthenticated) {
+	    Token token = new Token(accountService.createNewTokenForUsername(username));
+            return new ResponseEntity<Token>(token, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
     }
+    //Check username is busy
+    @RequestMapping(value = "/user/reguser/check_user", method = RequestMethod.POST)
+    public ResponseEntity checkUsernameExists (
+            @RequestParam(value = "username") String username) {
+        boolean userIsBusy = accountService.checkUsernameExists(username);
+	if (userIsBusy) {
+	    return new ResponseEntity(HttpStatus.CONFLICT);
+	}
+        return new ResponseEntity(HttpStatus.OK);
+    }
+    //Check email is busy
+    @RequestMapping(value = "/user/reguser/check_email", method = RequestMethod.POST)
+    public ResponseEntity checkEmailExists (
+            @RequestParam(value = "email") String email) {
+        boolean emailIsBusy = accountService.checkEmailExists(email);
+	if (emailIsBusy) {
+	    return new ResponseEntity(HttpStatus.CONFLICT);
+	}
+        return new ResponseEntity(HttpStatus.OK);
+    }
+    //
+    //Registration of new user
+    @RequestMapping(value = "/user/reguser", method = RequestMethod.POST)
+    public ResponseEntity<?> checkEmailExists (
+            @RequestBody Account account) {
+	String username = account.getUsername();
+	//Create new group which named as Username
+	String groupname = username;
+	//Set default privilege as admin (magic number 2)
+	account.setPrivilege((byte)2);
+	try {
+	    long groupId = accountService.createNewGroup(groupname);
+	    long accountId = accountService.createNewAccountByGroup(account, groupId);
+	    account.setId(accountId);
+	} catch (DataIntegrityViolationException e) {
+	    return new ResponseEntity(HttpStatus.CONFLICT);
+	}
+        return new ResponseEntity<Account>(account, HttpStatus.OK);
+
+    }
+
 
     /**
      * Account CRUD methods
