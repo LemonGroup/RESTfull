@@ -124,7 +124,8 @@ public class AdminController {
             @RequestHeader(value = "Auth-Token") String token) {
 
         AccountHandler ah = AccountHandler.getInstance();
-        long groupId = ah.getGroupIdByToken(token);
+        //long groupId = ah.getGroupIdByToken(token);
+        long groupId = accountService.getGroupIdByToken(token);
 	System.out.println("groupId" + groupId);
 	List<?> list = (List)accountService.getAllAccountsByGroup(groupId);
         if (list.size() == 0) {
@@ -137,8 +138,8 @@ public class AdminController {
     public ResponseEntity<?> postNewAccount(
             @RequestHeader(value = "Auth-Token") String token,
             @RequestBody Account account) {
-        AccountHandler ah = AccountHandler.getInstance();
-        long accountId = accountService.createNewAccountByGroup(account, ah.getGroupIdByToken(token));
+        long groupId = accountService.getGroupIdByToken(token);
+        long accountId = accountService.createNewAccountByGroup(account, groupId);
         account.setId(accountId);
         return new ResponseEntity<Account>(account, HttpStatus.OK);
     }
@@ -147,8 +148,9 @@ public class AdminController {
     public ResponseEntity updateAccountPrivilege(
             @RequestHeader(value = "Auth-Token") String token,
             @RequestBody Account newAccount) {
-        AccountHandler ah = AccountHandler.getInstance();
-        boolean updated = accountService.updateAccountPrivilegeByGroup(newAccount.getId(), newAccount.getPrivilege(), ah.getGroupIdByToken(token));
+        long groupId = accountService.getGroupIdByToken(token);
+        boolean updated = accountService
+	    .updateAccountPrivilegeByGroup(newAccount.getId(), newAccount.getPrivilege(), groupId);
 	if(updated) { 
 	    return new ResponseEntity(HttpStatus.OK);
 	}
@@ -159,8 +161,9 @@ public class AdminController {
     public ResponseEntity updateAccountMail(
             @RequestHeader(value = "Auth-Token") String token,
             @RequestBody Account newAccount) {
-        AccountHandler ah = AccountHandler.getInstance();
-        boolean updated = accountService.updateAccountMailByGroup(newAccount.getId(), newAccount.getEmail(), ah.getGroupIdByToken(token));
+        long groupId = accountService.getGroupIdByToken(token);
+        boolean updated = accountService
+	    .updateAccountMailByGroup(newAccount.getId(), newAccount.getEmail(), groupId);
 	if(updated) { 
 	    return new ResponseEntity(HttpStatus.OK);
 	}
@@ -171,8 +174,9 @@ public class AdminController {
     public ResponseEntity updateAccountPassword(
             @RequestHeader(value = "Auth-Token") String token,
             @RequestBody Account newAccount) {
-        AccountHandler ah = AccountHandler.getInstance();
-        boolean updated = accountService.updateAccountPasswordByGroup(newAccount.getId(), newAccount.getPassword(), ah.getGroupIdByToken(token));
+        long groupId = accountService.getGroupIdByToken(token);
+        boolean updated = accountService
+	    .updateAccountPasswordByGroup(newAccount.getId(), newAccount.getPassword(), groupId);
 	if(updated) { 
 	    return new ResponseEntity(HttpStatus.OK);
 	}
@@ -183,8 +187,8 @@ public class AdminController {
     public ResponseEntity deleteAccount(
             @RequestHeader(value = "Auth-Token") String token,
 	    @PathVariable long id) {
-        AccountHandler ah = AccountHandler.getInstance();
-        boolean isDeleted = accountService.deleteAccountByGroup(id, ah.getGroupIdByToken(token));
+        long groupId = accountService.getGroupIdByToken(token);
+        boolean isDeleted = accountService.deleteAccountByGroup(id, groupId);
 	if(isDeleted) { 
 	    return new ResponseEntity(HttpStatus.OK);
 	}
@@ -199,8 +203,7 @@ public class AdminController {
     @RequestMapping(value = "/catalog/persons", method = RequestMethod.GET)
     public ResponseEntity<?> getAllPersons(
             @RequestHeader(value = "Auth-Token") String token) {
-        AccountHandler ah = AccountHandler.getInstance();
-        long groupId = ah.getGroupIdByToken(token);
+        long groupId = accountService.getGroupIdByToken(token);
 	List<?> list = (List)personService.getAllPersonsByGroup(groupId);
         if (list.size() == 0) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -213,8 +216,8 @@ public class AdminController {
     public ResponseEntity<Person> postNewPerson(
             @RequestHeader(value = "Auth-Token") String token,
             @RequestBody Person person) {
-        AccountHandler ah = AccountHandler.getInstance();
-        long personId = personService.createNewPersonByGroup(person.getPersonName(), ah.getGroupIdByToken(token));
+        long groupId = accountService.getGroupIdByToken(token);
+        long personId = personService.createNewPersonByGroup(person.getPersonName(), groupId);
 	System.out.println(personId);
         person.setId(personId);
         //Do something with repository
@@ -226,8 +229,9 @@ public class AdminController {
     public ResponseEntity<Person> updatePerson(
             @RequestHeader(value = "Auth-Token") String token,
             @RequestBody Person newPerson) {
-        AccountHandler ah = AccountHandler.getInstance();
-        boolean updated = personService.updatePersonByGroup(newPerson.getId(), newPerson.getPersonName(), ah.getGroupIdByToken(token));
+        long groupId = accountService.getGroupIdByToken(token);
+        boolean updated = personService
+	    .updatePersonByGroup(newPerson.getId(), newPerson.getPersonName(), groupId);
 
         if (updated) {
             return new ResponseEntity<Person>(newPerson, HttpStatus.OK);
@@ -240,8 +244,8 @@ public class AdminController {
     public ResponseEntity deletePerson(
             @RequestHeader(value = "Auth-Token") String token,
             @PathVariable long id) {
-        AccountHandler ah = AccountHandler.getInstance();
-        boolean updated = personService.deletePersonByGroup(id, ah.getGroupIdByToken(token));
+        long groupId = accountService.getGroupIdByToken(token);
+        boolean updated = personService.deletePersonByGroup(id, groupId);
 
         if (updated) {
             return new ResponseEntity<>(HttpStatus.OK);
@@ -256,8 +260,7 @@ public class AdminController {
     @RequestMapping(value = "/catalog/keywords", method = RequestMethod.GET)
     public ResponseEntity<?> getAllKeywords(
             @RequestHeader(value = "Auth-Token") String token) {
-        AccountHandler ah = AccountHandler.getInstance();
-        long groupId = ah.getGroupIdByToken(token);
+        long groupId = accountService.getGroupIdByToken(token);
         List<?> list = (List)keywordService.getAllKeywords(groupId);
         if (list.size() == 0) {
             System.out.println("NO CONTENT");
@@ -271,8 +274,9 @@ public class AdminController {
     public ResponseEntity<Keyword> postNewKeywordToPerson(
             @RequestHeader(value = "Auth-Token") String token,
             @RequestBody Keyword keyword) {
-        AccountHandler ah = AccountHandler.getInstance();
-        long keywordId = keywordService.createNewKeywordByGroup(keyword.getPersonId(), keyword.getKeyword(), ah.getGroupIdByToken(token));
+        long groupId = accountService.getGroupIdByToken(token);
+        long keywordId = keywordService
+	    .createNewKeywordByGroup(keyword.getPersonId(), keyword.getKeyword(), groupId);
         System.out.println(keyword.getKeyword());
         keyword.setId(keywordId);
         //Do something with repository
@@ -284,8 +288,9 @@ public class AdminController {
     public ResponseEntity<Keyword> updateKeywordByPerson(
             @RequestHeader(value = "Auth-Token") String token,
             @RequestBody Keyword newKeyword) {
-        AccountHandler ah = AccountHandler.getInstance();
-        boolean updated = keywordService.updateKeywordByGroup(newKeyword.getId(), newKeyword.getKeyword(), ah.getGroupIdByToken(token));
+        long groupId = accountService.getGroupIdByToken(token);
+        boolean updated = keywordService
+	    .updateKeywordByGroup(newKeyword.getId(), newKeyword.getKeyword(), groupId);
         if (updated) {
             return new ResponseEntity<Keyword>(newKeyword, HttpStatus.OK);
         }
@@ -297,8 +302,9 @@ public class AdminController {
     public ResponseEntity<?> deleteKeyword(
             @RequestHeader(value = "Auth-Token") String token,
             @PathVariable long id) {
-        AccountHandler ah = AccountHandler.getInstance();
-        boolean deleted = keywordService.deleteKeywordByGroup(id, ah.getGroupIdByToken(token));
+        long groupId = accountService.getGroupIdByToken(token);
+        boolean deleted = keywordService
+	    .deleteKeywordByGroup(id, groupId);
 
         if (deleted) {
             return new ResponseEntity<>(HttpStatus.OK);
@@ -313,8 +319,7 @@ public class AdminController {
     @RequestMapping(value = "/catalog/sites", method = RequestMethod.GET)
     public ResponseEntity<?> getAllSites(
             @RequestHeader(value = "Auth-Token") String token) {
-        AccountHandler ah = AccountHandler.getInstance();
-        long groupId = ah.getGroupIdByToken(token);
+        long groupId = accountService.getGroupIdByToken(token);
         List<?> list =  (List)siteService.getAllSites(groupId);
         if (list.size() == 0) {
             System.out.println("NO CONTENT");
@@ -329,8 +334,8 @@ public class AdminController {
     public ResponseEntity<Site> postNewSite(
             @RequestHeader(value = "Auth-Token") String token,
             @RequestBody Site site) {
-        AccountHandler ah = AccountHandler.getInstance();
-        long siteId = siteService.createNewSiteByGroup(site.getSite(), ah.getGroupIdByToken(token));
+        long groupId = accountService.getGroupIdByToken(token);
+        long siteId = siteService.createNewSiteByGroup(site.getSite(), groupId);
         site.setId(siteId);
         //Do something with repository
         return new ResponseEntity<Site>(site, HttpStatus.OK);
@@ -341,8 +346,8 @@ public class AdminController {
     public ResponseEntity<Site> updateSite(
             @RequestHeader(value = "Auth-Token") String token,
             @RequestBody Site newSite) {
-        AccountHandler ah = AccountHandler.getInstance();
-        boolean updated = siteService.updateSiteByGroup(newSite.getId(), newSite.getSite(), ah.getGroupIdByToken(token));
+        long groupId = accountService.getGroupIdByToken(token);
+        boolean updated = siteService.updateSiteByGroup(newSite.getId(), newSite.getSite(), groupId);
         if (updated) {
             return new ResponseEntity<Site>(newSite, HttpStatus.OK);
         }
@@ -354,8 +359,8 @@ public class AdminController {
     public ResponseEntity<?> deleteSite(
             @RequestHeader(value = "Auth-Token") String token,
             @PathVariable long id) {
-        AccountHandler ah = AccountHandler.getInstance();
-        boolean deleted = siteService.deleteSiteByGroup(id, ah.getGroupIdByToken(token));
+        long groupId = accountService.getGroupIdByToken(token);
+        boolean deleted = siteService.deleteSiteByGroup(id, groupId);
 
         if (deleted) {
             return new ResponseEntity<>(HttpStatus.OK);
@@ -371,8 +376,9 @@ public class AdminController {
             @RequestHeader(value = "Auth-Token") String token,
             @RequestParam(value = "siteId") long siteId) {
 
-        AccountHandler ah = AccountHandler.getInstance();
-        List<OverMentionStatItem> list = new StatRepository().getOverStatBySiteIdByGroup(siteId, ah.getGroupIdByToken(token));
+        long groupId = accountService.getGroupIdByToken(token);
+        List<OverMentionStatItem> list = new StatRepository()
+	    .getOverStatBySiteIdByGroup(siteId, groupId);
 
         if (list.size() == 0) {
             System.out.println("NO CONTENT");
@@ -386,8 +392,9 @@ public class AdminController {
             @RequestHeader(value = "Auth-Token") String token,
             @RequestParam Map<String, String> requestParams) {
 
-        AccountHandler ah = AccountHandler.getInstance();
-        List<DailyStat> list = new StatRepository().getDaylyStatByParamsByGroup(requestParams, ah.getGroupIdByToken(token));
+        long groupId = accountService.getGroupIdByToken(token);
+        List<DailyStat> list = new StatRepository()
+	    .getDaylyStatByParamsByGroup(requestParams, groupId);
 
         if (list.size() == 0) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);

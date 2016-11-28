@@ -60,4 +60,8 @@ public class AccountService {
     public String createNewTokenForUsername(String username) {
         return iAccountRepository.createNewTokenForUsername(username);
     }
+
+    public long getGroupIdByToken(String token) {
+        return iAccountRepository.getGroupIdByToken(token);
+    }
 }

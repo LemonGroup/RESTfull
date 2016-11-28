@@ -77,13 +77,17 @@ public class DataAccountRepository implements IAccountRepository{
 	return UUID.randomUUID().toString();
     }
 
+    @Override
     public long getGroupIdByToken(String token) {
-	if(token.equals(FAKE_TOKEN)){
-	    return FAKE_GID;
-	}
-	return 0;
+        Session session = sessionFactory.getCurrentSession(); 
+	Query query = session.createQuery("select a.groupId from Account a, Token t " +
+		"WHERE a.id = t.accountId " +
+		"AND t.token = :token");
+	query.setParameter("token", token);
+	long result = Long.parseLong(query.uniqueResult().toString());
+	return result; 
     }
-    //Deprecated
+
     @Override
     public long getUserIdByUserName(String username) {
         Session session = sessionFactory.getCurrentSession(); 

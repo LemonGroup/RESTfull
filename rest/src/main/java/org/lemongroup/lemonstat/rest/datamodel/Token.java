@@ -1,6 +1,7 @@
 package org.lemongroup.lemonstat.rest.datamodel;
 
 import org.hibernate.annotations.GenericGenerator;
+//import org.hibernate.annotations.JoinColumn;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -11,6 +12,7 @@ import javax.persistence.*;
 @Table(name = "tokens", uniqueConstraints = {@UniqueConstraint(columnNames = {"token"})})
 @JsonIgnoreProperties({"id","accountId"})
 public class Token {
+//@JoinColumn({"accountid"})
 
     @Id
     @GeneratedValue(generator = "increment")
