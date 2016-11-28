@@ -5,14 +5,11 @@ import org.lemongroup.lemonstat.rest.service.KeywordService;
 import org.lemongroup.lemonstat.rest.service.PersonService;
 import org.lemongroup.lemonstat.rest.service.SiteService;
 import org.lemongroup.lemonstat.rest.service.AccountService;
-import org.lemongroup.lemonstat.rest.utils.AccountHandler;
 import org.lemongroup.lemonstat.rest.datamodel.Account;
 import org.lemongroup.lemonstat.rest.datamodel.Token;
 import org.lemongroup.lemonstat.rest.datamodel.Person;
 import org.lemongroup.lemonstat.rest.datamodel.Keyword;
 import org.lemongroup.lemonstat.rest.datamodel.Site;
-import org.lemongroup.lemonstat.rest.datamodel.CatalogList;
-import org.lemongroup.lemonstat.rest.datamodel.AuthResponse;
 import org.lemongroup.lemonstat.rest.datamodel.OverMentionStatItem;
 import org.lemongroup.lemonstat.rest.datamodel.DailyStat;
 
@@ -111,7 +108,6 @@ public class AdminController {
 	    return new ResponseEntity(HttpStatus.CONFLICT);
 	}
         return new ResponseEntity<Account>(account, HttpStatus.OK);
-
     }
 
 
@@ -122,9 +118,6 @@ public class AdminController {
     @RequestMapping(value = "/catalog/accounts", method = RequestMethod.GET)
     public ResponseEntity<?> getAllAccounts(
             @RequestHeader(value = "Auth-Token") String token) {
-
-        AccountHandler ah = AccountHandler.getInstance();
-        //long groupId = ah.getGroupIdByToken(token);
         long groupId = accountService.getGroupIdByToken(token);
 	System.out.println("groupId" + groupId);
 	List<?> list = (List)accountService.getAllAccountsByGroup(groupId);
@@ -133,6 +126,7 @@ public class AdminController {
         }
         return new ResponseEntity<List<?>>(list, HttpStatus.OK);
     }
+
     //Create new account
     @RequestMapping(value = "/catalog/accounts", method = RequestMethod.POST)
     public ResponseEntity<?> postNewAccount(
@@ -143,6 +137,7 @@ public class AdminController {
         account.setId(accountId);
         return new ResponseEntity<Account>(account, HttpStatus.OK);
     }
+
     //Update account privilege
     @RequestMapping(value = "/catalog/accounts/privilege", method = RequestMethod.PUT)
     public ResponseEntity updateAccountPrivilege(
@@ -156,6 +151,7 @@ public class AdminController {
 	}
 	return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
+
     //Update account email
     @RequestMapping(value = "/catalog/accounts/email", method = RequestMethod.PUT)
     public ResponseEntity updateAccountMail(
@@ -169,6 +165,7 @@ public class AdminController {
 	}
 	return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
+
     //Update account password
     @RequestMapping(value = "/catalog/accounts/password", method = RequestMethod.PUT)
     public ResponseEntity updateAccountPassword(
@@ -182,6 +179,7 @@ public class AdminController {
 	}
 	return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
+
     //Delete account
     @RequestMapping(value = "/catalog/accounts/{id}", method = RequestMethod.DELETE)
     public ResponseEntity deleteAccount(
@@ -194,7 +192,6 @@ public class AdminController {
 	}
 	return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
-
 
     /**
      * Person CRUD methods
@@ -216,11 +213,14 @@ public class AdminController {
     public ResponseEntity<Person> postNewPerson(
             @RequestHeader(value = "Auth-Token") String token,
             @RequestBody Person person) {
-        long groupId = accountService.getGroupIdByToken(token);
-        long personId = personService.createNewPersonByGroup(person.getPersonName(), groupId);
-	System.out.println(personId);
-        person.setId(personId);
-        //Do something with repository
+	try {
+	    long groupId = accountService.getGroupIdByToken(token);
+	    long personId = personService.createNewPersonByGroup(person.getPersonName(), groupId);
+	    System.out.println(personId);
+	    person.setId(personId);
+	} catch (DataIntegrityViolationException e) {
+	    return new ResponseEntity(HttpStatus.CONFLICT);
+	}
         return new ResponseEntity<Person>(person, HttpStatus.OK);
     }
 
