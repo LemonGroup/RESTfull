@@ -51,65 +51,63 @@ public class AdminController {
     @RequestMapping(value = "/user/auth", method = RequestMethod.GET)
     public ResponseEntity<?> auth(
             @RequestParam Map<String, String> authParams) {
-
-	String username = authParams.get("user");
-	//Compare passwords
-	boolean isAuthenticated;
-	try {
-	    isAuthenticated = authParams.get("pass")
-		.equals(accountService
-			.getPasswordByUserName(username));
-	} catch (Exception e) {
-	    isAuthenticated = false;
-	}
-	System.out.println(isAuthenticated);
+        String username = authParams.get("user");
+        //Compare passwords
+        boolean isAuthenticated;
+        try {
+            isAuthenticated = authParams.get("pass").equals(accountService.getPasswordByUserName(username));
+        } catch (Exception e) {
+            isAuthenticated = false;
+        }
+        System.out.println(isAuthenticated);
         if (isAuthenticated) {
-	    Token token = new Token(accountService.createNewTokenForUsername(username));
+            Token token = new Token(accountService.createNewTokenForUsername(username));
             return new ResponseEntity<Token>(token, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
     }
+
     //Check username is busy
     @RequestMapping(value = "/user/reguser/check_user", method = RequestMethod.POST)
-    public ResponseEntity checkUsernameExists (
+    public ResponseEntity checkUsernameExists(
             @RequestParam(value = "username") String username) {
         boolean userIsBusy = accountService.checkUsernameExists(username);
-	if (userIsBusy) {
-	    return new ResponseEntity(HttpStatus.CONFLICT);
-	}
+        if (userIsBusy) {
+            return new ResponseEntity(HttpStatus.CONFLICT);
+        }
         return new ResponseEntity(HttpStatus.OK);
-    }
-    //Check email is busy
-    @RequestMapping(value = "/user/reguser/check_email", method = RequestMethod.POST)
-    public ResponseEntity checkEmailExists (
-            @RequestParam(value = "email") String email) {
-        boolean emailIsBusy = accountService.checkEmailExists(email);
-	if (emailIsBusy) {
-	    return new ResponseEntity(HttpStatus.CONFLICT);
-	}
-        return new ResponseEntity(HttpStatus.OK);
-    }
-    //
-    //Registration of new user
-    @RequestMapping(value = "/user/reguser", method = RequestMethod.POST)
-    public ResponseEntity<?> checkEmailExists (
-            @RequestBody Account account) {
-	String username = account.getUsername();
-	//Create new group which named as Username
-	String groupname = username;
-	//Set default privilege as admin (magic number 2)
-	account.setPrivilege((byte)2);
-	try {
-	    long groupId = accountService.createNewGroup(groupname);
-	    long accountId = accountService.createNewAccountByGroup(account, groupId);
-	    account.setId(accountId);
-	} catch (DataIntegrityViolationException e) {
-	    return new ResponseEntity(HttpStatus.CONFLICT);
-	}
-        return new ResponseEntity<Account>(account, HttpStatus.OK);
     }
 
+    //Check email is busy
+    @RequestMapping(value = "/user/reguser/check_email", method = RequestMethod.POST)
+    public ResponseEntity checkEmailExists(
+            @RequestParam(value = "email") String email) {
+        boolean emailIsBusy = accountService.checkEmailExists(email);
+        if (emailIsBusy) {
+            return new ResponseEntity(HttpStatus.CONFLICT);
+        }
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    //Registration of new user
+    @RequestMapping(value = "/user/reguser", method = RequestMethod.POST)
+    public ResponseEntity<?> checkEmailExists(
+            @RequestBody Account account) {
+        String username = account.getUsername();
+        //Create new group which named as Username
+        String groupname = username;
+        //Set default privilege as admin (magic number 2)
+        account.setPrivilege((byte) 2);
+        try {
+            long groupId = accountService.createNewGroup(groupname);
+            long accountId = accountService.createNewAccountByGroup(account, groupId);
+            account.setId(accountId);
+        } catch (DataIntegrityViolationException e) {
+            return new ResponseEntity(HttpStatus.CONFLICT);
+        }
+        return new ResponseEntity<Account>(account, HttpStatus.OK);
+    }
 
     /**
      * Account CRUD methods
@@ -119,8 +117,8 @@ public class AdminController {
     public ResponseEntity<?> getAllAccounts(
             @RequestHeader(value = "Auth-Token") String token) {
         long groupId = accountService.getGroupIdByToken(token);
-	System.out.println("groupId" + groupId);
-	List<?> list = (List)accountService.getAllAccountsByGroup(groupId);
+        System.out.println("groupId" + groupId);
+        List<?> list = (List) accountService.getAllAccountsByGroup(groupId);
         if (list.size() == 0) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
@@ -132,9 +130,13 @@ public class AdminController {
     public ResponseEntity<?> postNewAccount(
             @RequestHeader(value = "Auth-Token") String token,
             @RequestBody Account account) {
-        long groupId = accountService.getGroupIdByToken(token);
-        long accountId = accountService.createNewAccountByGroup(account, groupId);
-        account.setId(accountId);
+        try {
+            long groupId = accountService.getGroupIdByToken(token);
+            long accountId = accountService.createNewAccountByGroup(account, groupId);
+            account.setId(accountId);
+        } catch (DataIntegrityViolationException e) {
+            return new ResponseEntity(HttpStatus.CONFLICT);
+        }
         return new ResponseEntity<Account>(account, HttpStatus.OK);
     }
 
@@ -144,12 +146,11 @@ public class AdminController {
             @RequestHeader(value = "Auth-Token") String token,
             @RequestBody Account newAccount) {
         long groupId = accountService.getGroupIdByToken(token);
-        boolean updated = accountService
-	    .updateAccountPrivilegeByGroup(newAccount.getId(), newAccount.getPrivilege(), groupId);
-	if(updated) { 
-	    return new ResponseEntity(HttpStatus.OK);
-	}
-	return new ResponseEntity(HttpStatus.NO_CONTENT);
+        boolean updated = accountService.updateAccountPrivilegeByGroup(newAccount.getId(), newAccount.getPrivilege(), groupId);
+        if (updated) {
+            return new ResponseEntity(HttpStatus.OK);
+        }
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
     //Update account email
@@ -158,12 +159,11 @@ public class AdminController {
             @RequestHeader(value = "Auth-Token") String token,
             @RequestBody Account newAccount) {
         long groupId = accountService.getGroupIdByToken(token);
-        boolean updated = accountService
-	    .updateAccountMailByGroup(newAccount.getId(), newAccount.getEmail(), groupId);
-	if(updated) { 
-	    return new ResponseEntity(HttpStatus.OK);
-	}
-	return new ResponseEntity(HttpStatus.NO_CONTENT);
+        boolean updated = accountService.updateAccountMailByGroup(newAccount.getId(), newAccount.getEmail(), groupId);
+        if (updated) {
+            return new ResponseEntity(HttpStatus.OK);
+        }
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
     //Update account password
@@ -172,25 +172,24 @@ public class AdminController {
             @RequestHeader(value = "Auth-Token") String token,
             @RequestBody Account newAccount) {
         long groupId = accountService.getGroupIdByToken(token);
-        boolean updated = accountService
-	    .updateAccountPasswordByGroup(newAccount.getId(), newAccount.getPassword(), groupId);
-	if(updated) { 
-	    return new ResponseEntity(HttpStatus.OK);
-	}
-	return new ResponseEntity(HttpStatus.NO_CONTENT);
+        boolean updated = accountService.updateAccountPasswordByGroup(newAccount.getId(), newAccount.getPassword(), groupId);
+        if (updated) {
+            return new ResponseEntity(HttpStatus.OK);
+        }
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
     //Delete account
     @RequestMapping(value = "/catalog/accounts/{id}", method = RequestMethod.DELETE)
     public ResponseEntity deleteAccount(
             @RequestHeader(value = "Auth-Token") String token,
-	    @PathVariable long id) {
+            @PathVariable long id) {
         long groupId = accountService.getGroupIdByToken(token);
         boolean isDeleted = accountService.deleteAccountByGroup(id, groupId);
-	if(isDeleted) { 
-	    return new ResponseEntity(HttpStatus.OK);
-	}
-	return new ResponseEntity(HttpStatus.NO_CONTENT);
+        if (isDeleted) {
+            return new ResponseEntity(HttpStatus.OK);
+        }
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
     /**
@@ -201,7 +200,7 @@ public class AdminController {
     public ResponseEntity<?> getAllPersons(
             @RequestHeader(value = "Auth-Token") String token) {
         long groupId = accountService.getGroupIdByToken(token);
-	List<?> list = (List)personService.getAllPersonsByGroup(groupId);
+        List<?> list = (List) personService.getAllPersonsByGroup(groupId);
         if (list.size() == 0) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
@@ -213,14 +212,14 @@ public class AdminController {
     public ResponseEntity<Person> postNewPerson(
             @RequestHeader(value = "Auth-Token") String token,
             @RequestBody Person person) {
-	try {
-	    long groupId = accountService.getGroupIdByToken(token);
-	    long personId = personService.createNewPersonByGroup(person.getPersonName(), groupId);
-	    System.out.println(personId);
-	    person.setId(personId);
-	} catch (DataIntegrityViolationException e) {
-	    return new ResponseEntity(HttpStatus.CONFLICT);
-	}
+        try {
+            long groupId = accountService.getGroupIdByToken(token);
+            long personId = personService.createNewPersonByGroup(person.getPersonName(), groupId);
+            System.out.println(personId);
+            person.setId(personId);
+        } catch (DataIntegrityViolationException e) {
+            return new ResponseEntity<Person>(HttpStatus.CONFLICT);
+        }
         return new ResponseEntity<Person>(person, HttpStatus.OK);
     }
 
@@ -229,14 +228,16 @@ public class AdminController {
     public ResponseEntity<Person> updatePerson(
             @RequestHeader(value = "Auth-Token") String token,
             @RequestBody Person newPerson) {
-        long groupId = accountService.getGroupIdByToken(token);
-        boolean updated = personService
-	    .updatePersonByGroup(newPerson.getId(), newPerson.getPersonName(), groupId);
-
-        if (updated) {
-            return new ResponseEntity<Person>(newPerson, HttpStatus.OK);
+        try {
+            long groupId = accountService.getGroupIdByToken(token);
+            boolean updated = personService.updatePersonByGroup(newPerson.getId(), newPerson.getPersonName(), groupId);
+            if (updated) {
+                return new ResponseEntity<Person>(newPerson, HttpStatus.OK);
+            }
+        } catch (DataIntegrityViolationException e) {
+            return new ResponseEntity<Person>(HttpStatus.CONFLICT);
         }
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<Person>(HttpStatus.NO_CONTENT);
     }
 
     //Delete person
@@ -256,12 +257,12 @@ public class AdminController {
     /**
      * Keywords CRUD methods
      */
-    //Get all keywords 
+    //Get all keywords
     @RequestMapping(value = "/catalog/keywords", method = RequestMethod.GET)
     public ResponseEntity<?> getAllKeywords(
             @RequestHeader(value = "Auth-Token") String token) {
         long groupId = accountService.getGroupIdByToken(token);
-        List<?> list = (List)keywordService.getAllKeywords(groupId);
+        List<?> list = (List) keywordService.getAllKeywords(groupId);
         if (list.size() == 0) {
             System.out.println("NO CONTENT");
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -274,13 +275,15 @@ public class AdminController {
     public ResponseEntity<Keyword> postNewKeywordToPerson(
             @RequestHeader(value = "Auth-Token") String token,
             @RequestBody Keyword keyword) {
-        long groupId = accountService.getGroupIdByToken(token);
-        long keywordId = keywordService
-	    .createNewKeywordByGroup(keyword.getPersonId(), keyword.getKeyword(), groupId);
-        System.out.println(keyword.getKeyword());
-        keyword.setId(keywordId);
-        //Do something with repository
-        return new ResponseEntity<Keyword>(keyword, HttpStatus.OK);
+        try {
+            long groupId = accountService.getGroupIdByToken(token);
+            long keywordId = keywordService.createNewKeywordByGroup(keyword.getPersonId(), keyword.getKeyword(), groupId);
+            System.out.println(keyword.getKeyword());
+            keyword.setId(keywordId);
+        } catch (DataIntegrityViolationException e) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+        return new ResponseEntity<>(keyword, HttpStatus.OK);
     }
 
     //Update keyword by person
@@ -288,11 +291,14 @@ public class AdminController {
     public ResponseEntity<Keyword> updateKeywordByPerson(
             @RequestHeader(value = "Auth-Token") String token,
             @RequestBody Keyword newKeyword) {
-        long groupId = accountService.getGroupIdByToken(token);
-        boolean updated = keywordService
-	    .updateKeywordByGroup(newKeyword.getId(), newKeyword.getKeyword(), groupId);
-        if (updated) {
-            return new ResponseEntity<Keyword>(newKeyword, HttpStatus.OK);
+        try {
+            long groupId = accountService.getGroupIdByToken(token);
+            boolean updated = keywordService.updateKeywordByGroup(newKeyword.getId(), newKeyword.getKeyword(), groupId);
+            if (updated) {
+                return new ResponseEntity<>(newKeyword, HttpStatus.OK);
+            }
+        } catch (DataIntegrityViolationException e) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
@@ -303,9 +309,7 @@ public class AdminController {
             @RequestHeader(value = "Auth-Token") String token,
             @PathVariable long id) {
         long groupId = accountService.getGroupIdByToken(token);
-        boolean deleted = keywordService
-	    .deleteKeywordByGroup(id, groupId);
-
+        boolean deleted = keywordService.deleteKeywordByGroup(id, groupId);
         if (deleted) {
             return new ResponseEntity<>(HttpStatus.OK);
         }
@@ -320,7 +324,7 @@ public class AdminController {
     public ResponseEntity<?> getAllSites(
             @RequestHeader(value = "Auth-Token") String token) {
         long groupId = accountService.getGroupIdByToken(token);
-        List<?> list =  (List)siteService.getAllSites(groupId);
+        List<?> list = (List) siteService.getAllSites(groupId);
         if (list.size() == 0) {
             System.out.println("NO CONTENT");
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -328,16 +332,18 @@ public class AdminController {
         return new ResponseEntity<List<?>>(list, HttpStatus.OK);
     }
 
-    //
     //Create new site
     @RequestMapping(value = "/catalog/sites", method = RequestMethod.POST)
     public ResponseEntity<Site> postNewSite(
             @RequestHeader(value = "Auth-Token") String token,
             @RequestBody Site site) {
-        long groupId = accountService.getGroupIdByToken(token);
-        long siteId = siteService.createNewSiteByGroup(site.getSite(), groupId);
-        site.setId(siteId);
-        //Do something with repository
+        try {
+            long groupId = accountService.getGroupIdByToken(token);
+            long siteId = siteService.createNewSiteByGroup(site.getSite(), groupId);
+            site.setId(siteId);
+        } catch (DataIntegrityViolationException e) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
         return new ResponseEntity<Site>(site, HttpStatus.OK);
     }
 
@@ -346,10 +352,14 @@ public class AdminController {
     public ResponseEntity<Site> updateSite(
             @RequestHeader(value = "Auth-Token") String token,
             @RequestBody Site newSite) {
-        long groupId = accountService.getGroupIdByToken(token);
-        boolean updated = siteService.updateSiteByGroup(newSite.getId(), newSite.getSite(), groupId);
-        if (updated) {
-            return new ResponseEntity<Site>(newSite, HttpStatus.OK);
+        try {
+            long groupId = accountService.getGroupIdByToken(token);
+            boolean updated = siteService.updateSiteByGroup(newSite.getId(), newSite.getSite(), groupId);
+            if (updated) {
+                return new ResponseEntity<Site>(newSite, HttpStatus.OK);
+            }
+        } catch (DataIntegrityViolationException e) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
@@ -361,7 +371,6 @@ public class AdminController {
             @PathVariable long id) {
         long groupId = accountService.getGroupIdByToken(token);
         boolean deleted = siteService.deleteSiteByGroup(id, groupId);
-
         if (deleted) {
             return new ResponseEntity<>(HttpStatus.OK);
         }
@@ -377,9 +386,7 @@ public class AdminController {
             @RequestParam(value = "siteId") long siteId) {
 
         long groupId = accountService.getGroupIdByToken(token);
-        List<OverMentionStatItem> list = new StatRepository()
-	    .getOverStatBySiteIdByGroup(siteId, groupId);
-
+        List<OverMentionStatItem> list = new StatRepository().getOverStatBySiteIdByGroup(siteId, groupId);
         if (list.size() == 0) {
             System.out.println("NO CONTENT");
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -393,9 +400,7 @@ public class AdminController {
             @RequestParam Map<String, String> requestParams) {
 
         long groupId = accountService.getGroupIdByToken(token);
-        List<DailyStat> list = new StatRepository()
-	    .getDaylyStatByParamsByGroup(requestParams, groupId);
-
+        List<DailyStat> list = new StatRepository().getDaylyStatByParamsByGroup(requestParams, groupId);
         if (list.size() == 0) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
