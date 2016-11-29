@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "accounts", uniqueConstraints = {@UniqueConstraint(columnNames = {"username"})})
+@Table(name = "accounts", uniqueConstraints = {@UniqueConstraint(columnNames = {"username" , "email"})})
 @JsonIgnoreProperties({"groupId"})
 public class Account {
 

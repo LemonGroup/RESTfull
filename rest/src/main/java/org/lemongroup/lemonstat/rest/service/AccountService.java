@@ -64,4 +64,12 @@ public class AccountService {
     public long getGroupIdByToken(String token) {
         return iAccountRepository.getGroupIdByToken(token);
     }
+
+    public Account getAccountByEmail(String email) {
+        return iAccountRepository.getAccountByEmail(email);
+    }
+
+    public boolean updateAccountPassword(long accountId, String newPassword) {
+        return iAccountRepository.updateAccountPassword(accountId, newPassword);
+    }
 }

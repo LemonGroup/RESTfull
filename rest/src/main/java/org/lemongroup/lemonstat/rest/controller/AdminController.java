@@ -1,10 +1,7 @@
 package org.lemongroup.lemonstat.rest.controller;
 
 import org.lemongroup.lemonstat.rest.db.*;
-import org.lemongroup.lemonstat.rest.service.KeywordService;
-import org.lemongroup.lemonstat.rest.service.PersonService;
-import org.lemongroup.lemonstat.rest.service.SiteService;
-import org.lemongroup.lemonstat.rest.service.AccountService;
+import org.lemongroup.lemonstat.rest.service.*;
 import org.lemongroup.lemonstat.rest.datamodel.Account;
 import org.lemongroup.lemonstat.rest.datamodel.Token;
 import org.lemongroup.lemonstat.rest.datamodel.Person;
@@ -20,6 +17,8 @@ import java.util.Collection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
+import org.springframework.mail.MailException;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -47,6 +46,12 @@ public class AdminController {
 
     @Autowired
     AccountService accountService;
+
+    @Autowired
+    RandomStringService randomStringService;
+
+    @Autowired
+    NotificationService notificationService;
 
     @RequestMapping(value = "/user/auth", method = RequestMethod.GET)
     public ResponseEntity<?> auth(
@@ -174,6 +179,26 @@ public class AdminController {
         long groupId = accountService.getGroupIdByToken(token);
         boolean updated = accountService.updateAccountPasswordByGroup(newAccount.getId(), newAccount.getPassword(), groupId);
         if (updated) {
+            return new ResponseEntity(HttpStatus.OK);
+        }
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
+    }
+
+    //If user forgot account password
+    @RequestMapping(value = "/catalog/accounts/reset_password", method = RequestMethod.POST)
+    public ResponseEntity resetAccountPassword(
+            @RequestBody Account newAccount) {
+        Account account = accountService.getAccountByEmail(newAccount.getEmail());
+        String randomPassword = randomStringService.randomString(7);
+        boolean updated = accountService.updateAccountPassword(account.getId(), randomPassword);
+        if (updated) {
+            account.setPassword(randomPassword);
+            try {
+                notificationService.sendNotification(account);
+            }
+            catch (MailException e){
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
             return new ResponseEntity(HttpStatus.OK);
         }
         return new ResponseEntity(HttpStatus.NO_CONTENT);

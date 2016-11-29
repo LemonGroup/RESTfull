@@ -21,4 +21,6 @@ public interface IAccountRepository {
     public boolean checkUsernameExists(String username);
     public boolean checkEmailExists(String email);
     public String createNewTokenForUsername(String username);
+    public boolean updateAccountPassword(long accountId, String newPassword);
+    public Account getAccountByEmail(String email);
 }
