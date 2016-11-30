@@ -1,6 +1,5 @@
 package org.lemongroup.lemonstat.rest.service;
 
-import org.lemongroup.lemonstat.rest.db.IPersonRepository;
 import org.lemongroup.lemonstat.rest.db.ISiteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

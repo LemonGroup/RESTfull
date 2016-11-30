@@ -10,6 +10,7 @@ import org.lemongroup.lemonstat.rest.datamodel.Site;
 import org.lemongroup.lemonstat.rest.datamodel.OverMentionStatItem;
 import org.lemongroup.lemonstat.rest.datamodel.DailyStat;
 
+import java.util.Date;
 import java.util.Map;
 import java.util.List;
 import java.util.Collection;
@@ -52,6 +53,9 @@ public class AdminController {
 
     @Autowired
     NotificationService notificationService;
+
+    @Autowired
+    StatService statService;
 
     @RequestMapping(value = "/user/auth", method = RequestMethod.GET)
     public ResponseEntity<?> auth(
@@ -425,7 +429,7 @@ public class AdminController {
             @RequestParam(value = "siteId") long siteId) {
 
         long groupId = accountService.getGroupIdByToken(token);
-        List<OverMentionStatItem> list = new StatRepository().getOverStatBySiteIdByGroup(siteId, groupId);
+        List<OverMentionStatItem> list = (List<OverMentionStatItem>) statService.getOverStatByPersonBySite(1,1);
         if (list.size() == 0) {
             System.out.println("NO CONTENT");
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -439,7 +443,7 @@ public class AdminController {
             @RequestParam Map<String, String> requestParams) {
 
         long groupId = accountService.getGroupIdByToken(token);
-        List<DailyStat> list = new StatRepository().getDaylyStatByParamsByGroup(requestParams, groupId);
+        List<DailyStat> list = (List<DailyStat>) statService.getDaylyStatByPersonBySiteByDay(1,1,new Date(1123123));
         if (list.size() == 0) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
