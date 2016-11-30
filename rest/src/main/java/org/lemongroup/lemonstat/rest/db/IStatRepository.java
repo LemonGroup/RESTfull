@@ -5,7 +5,7 @@ import java.util.Date;
 
 public interface IStatRepository {
 
-    public Collection getOverStatByPersonBySite(long personId, long siteId);
+    public Long getOverStatByPersonBySite(long personId, long siteId);
 
     public Collection getDaylyStatByPersonBySiteByDay(long personId, long siteId, Date day);
 }

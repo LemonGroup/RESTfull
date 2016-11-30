@@ -10,10 +10,7 @@ import org.lemongroup.lemonstat.rest.datamodel.Site;
 import org.lemongroup.lemonstat.rest.datamodel.OverMentionStatItem;
 import org.lemongroup.lemonstat.rest.datamodel.DailyStat;
 
-import java.util.Date;
-import java.util.Map;
-import java.util.List;
-import java.util.Collection;
+import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -424,17 +421,22 @@ public class AdminController {
      * Get statistic methods
      */
     @RequestMapping(value = "/stat/over_stat", method = RequestMethod.GET)
-    public ResponseEntity<List<OverMentionStatItem>> getOverStat(
+    public ResponseEntity<?> getOverStat(
             @RequestHeader(value = "Auth-Token") String token,
             @RequestParam(value = "siteId") long siteId) {
 
         long groupId = accountService.getGroupIdByToken(token);
-        List<OverMentionStatItem> list = (List<OverMentionStatItem>) statService.getOverStatByPersonBySite(1,1);
+        List<Person> personList = (List)personService.getAllPersonsByGroup(groupId);
+        List<OverMentionStatItem> list = new ArrayList<>();
+        for(Person p : personList) {
+            //Get number of mention for single Person
+                Long nom = statService.getOverStatByPersonBySite(p.getId(), siteId);
+                list.add(new OverMentionStatItem(p.getPersonName(),nom.intValue()));
+        }
         if (list.size() == 0) {
-            System.out.println("NO CONTENT");
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
-        return new ResponseEntity<List<OverMentionStatItem>>(list, HttpStatus.OK);
+        return new ResponseEntity<List<?>>(list, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/stat/daily_stat", method = RequestMethod.GET)

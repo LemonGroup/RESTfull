@@ -13,7 +13,7 @@ public class StatService {
     @Autowired
     IStatRepository iStatRepository;
 
-    public Collection getOverStatByPersonBySite(long personId, long siteId){
+    public Long getOverStatByPersonBySite(long personId, long siteId){
         return iStatRepository.getOverStatByPersonBySite(personId, siteId);
     }
 
