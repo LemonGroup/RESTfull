@@ -184,6 +184,20 @@ public class AdminController {
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
+    // get account data by token
+    @RequestMapping(value = "/catalog/accounts/myaccount", method = RequestMethod.GET)
+    public ResponseEntity getMyAccount(
+            @RequestHeader(value = "Auth-Token") String token){
+        Account myAccount = null;
+        try {
+             myAccount = accountService.getAccountByToken(token);
+        }
+        catch (Exception e){
+            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<Account>(myAccount, HttpStatus.OK);
+    }
+
     //If user forgot account password
     @RequestMapping(value = "/catalog/accounts/reset_password", method = RequestMethod.POST)
     public ResponseEntity resetAccountPassword(

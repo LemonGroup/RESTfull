@@ -2,6 +2,7 @@ package org.lemongroup.lemonstat.rest.service;
 
 import org.lemongroup.lemonstat.rest.db.IAccountRepository;
 import org.lemongroup.lemonstat.rest.datamodel.Account;
+import org.lemongroup.lemonstat.rest.db.ITokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +13,9 @@ public class AccountService {
 
     @Autowired
     IAccountRepository iAccountRepository;
+
+    @Autowired
+    ITokenRepository tokenRepository;
 
     public Collection getAllAccountsByGroup(long groupId){
        return iAccountRepository.getAllAccountsByGroup(groupId);
@@ -71,5 +75,10 @@ public class AccountService {
 
     public boolean updateAccountPassword(long accountId, String newPassword) {
         return iAccountRepository.updateAccountPassword(accountId, newPassword);
+    }
+
+    public Account getAccountByToken(String token){
+        long accountId = tokenRepository.getAccountIdByToken(token);
+        return iAccountRepository.getAccountById(accountId);
     }
 }

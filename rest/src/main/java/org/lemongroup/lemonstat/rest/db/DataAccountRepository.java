@@ -140,6 +140,13 @@ public class DataAccountRepository implements IAccountRepository {
     }
 
     @Override
+    public Account getAccountById(long id) {
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Account.class);
+        criteria.add(Restrictions.eq("id", id));
+        return (Account) criteria.uniqueResult();
+    }
+
+    @Override
     public long createNewAccountByGroup(Account account, long groupId) {
         account.setGroupId(groupId);
         sessionFactory.getCurrentSession().save(account);

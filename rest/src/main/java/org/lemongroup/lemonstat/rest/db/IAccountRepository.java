@@ -23,4 +23,5 @@ public interface IAccountRepository {
     public String createNewTokenForUsername(String username);
     public boolean updateAccountPassword(long accountId, String newPassword);
     public Account getAccountByEmail(String email);
+    public Account getAccountById (long id);
 }
