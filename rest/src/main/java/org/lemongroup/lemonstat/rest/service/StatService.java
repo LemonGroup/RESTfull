@@ -17,7 +17,7 @@ public class StatService {
         return iStatRepository.getOverStatByPersonBySite(personId, siteId);
     }
 
-    public Collection getDaylyStatByPersonBySiteByDay(long personId, long siteId, Date day){
+    public Long getDaylyStatByPersonBySiteByDay(long personId, long siteId, Date day){
         return iStatRepository.getDaylyStatByPersonBySiteByDay(personId, siteId, day);
     }
 }

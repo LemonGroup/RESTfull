@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -36,7 +38,18 @@ public class DataStatRepository implements IStatRepository{
 	}
 
 	@Override
-	public Collection getDaylyStatByPersonBySiteByDay(long personId, long siteId, Date day) {
-		return null;
+	public Long getDaylyStatByPersonBySiteByDay(long personId, long siteId, Date startDate) {
+		Session session = sessionFactory.getCurrentSession();
+		int millisecInDay = 86400000;
+		Date endDate = new Date(startDate.getTime() + millisecInDay);
+		Query query = session.createQuery(
+				" select sum(ppr.rank) from PersonPageRank ppr " +
+						"where pageid in " +
+						"(select p.id from Page p where p.lastScanDate BETWEEN :date1 and :date2 and siteid = :siteId) and personid = :personId");
+		query.setParameter("personId", personId);
+		query.setTimestamp("date1", startDate);
+		query.setTimestamp("date2", endDate);
+		query.setParameter("siteId", siteId);
+		return (Long) query.uniqueResult();
 	}
 }

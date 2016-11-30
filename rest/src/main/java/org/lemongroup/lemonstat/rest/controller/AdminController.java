@@ -10,6 +10,8 @@ import org.lemongroup.lemonstat.rest.datamodel.Site;
 import org.lemongroup.lemonstat.rest.datamodel.OverMentionStatItem;
 import org.lemongroup.lemonstat.rest.datamodel.DailyStat;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -443,9 +445,34 @@ public class AdminController {
     public ResponseEntity<List<DailyStat>> getDailyStat(
             @RequestHeader(value = "Auth-Token") String token,
             @RequestParam Map<String, String> requestParams) {
-
-        long groupId = accountService.getGroupIdByToken(token);
-        List<DailyStat> list = (List<DailyStat>) statService.getDaylyStatByPersonBySiteByDay(1,1,new Date(1123123));
+        long siteId = Long.parseLong(requestParams.get("siteId"));
+        long personId = Long.parseLong(requestParams.get("personId"));
+        String startDate = requestParams.get("start_date");
+        String endDate = requestParams.get("end_date");
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        Date date1 = null;
+        Date date2 = null;
+        int millisecInDay = 86400000;
+        try {
+            date1 = format.parse(startDate);
+            date2 = format.parse(endDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        List<Date> days = new ArrayList<>();
+        long countOfDays = (date2.getTime() - date1.getTime()) / millisecInDay + 1;
+        for (int i = 0; i < countOfDays; i++) {
+            Date d = new Date(date1.getTime() + i*millisecInDay);
+            days.add(d);
+        }
+        List<DailyStat> list = new ArrayList<>();
+        for(Date day : days) {
+            Long nom = statService.getDaylyStatByPersonBySiteByDay(personId, siteId,day);
+            if(nom != null) {
+                String simpleDate = format.format(day);
+                list.add(new DailyStat(simpleDate,nom.intValue()));
+            }
+        }
         if (list.size() == 0) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
