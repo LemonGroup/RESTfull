@@ -467,13 +467,13 @@ public class AdminController {
 	long t = startTime;
 	while(t <= endTime) {
 	    //show statisctic per day
-	    t = t + ONE_DAY; 
 	    Date day = new Date(t);
             Long nom = statService.getDaylyStatByPersonBySiteByDay(personId, siteId,day);
             if(nom != null) {
                 String simpleDate = format.format(day);
                 list.add(new DailyStat(simpleDate,nom.intValue()));
             }
+	    t = t + ONE_DAY; 
 	}
         if (list.size() == 0) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
