@@ -433,6 +433,9 @@ public class AdminController {
         for(Person p : personList) {
             //Get number of mention for single Person
                 Long nom = statService.getOverStatByPersonBySite(p.getId(), siteId);
+		if(nom == null ) {
+		    continue;
+		} 
                 list.add(new OverMentionStatItem(p.getPersonName(),nom.intValue()));
         }
         if (list.size() == 0) {
@@ -445,34 +448,33 @@ public class AdminController {
     public ResponseEntity<List<DailyStat>> getDailyStat(
             @RequestHeader(value = "Auth-Token") String token,
             @RequestParam Map<String, String> requestParams) {
+
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        int ONE_DAY = 86400000;
+
         long siteId = Long.parseLong(requestParams.get("siteId"));
         long personId = Long.parseLong(requestParams.get("personId"));
-        String startDate = requestParams.get("start_date");
-        String endDate = requestParams.get("end_date");
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-        Date date1 = null;
-        Date date2 = null;
-        int millisecInDay = 86400000;
+	long startTime;
+	long endTime;
+	//time in String convert to timestamp
         try {
-            date1 = format.parse(startDate);
-            date2 = format.parse(endDate);
+            startTime = format.parse(requestParams.get("start_date")).getTime();
+            endTime = format.parse(requestParams.get("end_date")).getTime();
         } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        List<Date> days = new ArrayList<>();
-        long countOfDays = (date2.getTime() - date1.getTime()) / millisecInDay + 1;
-        for (int i = 0; i < countOfDays; i++) {
-            Date d = new Date(date1.getTime() + i*millisecInDay);
-            days.add(d);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         List<DailyStat> list = new ArrayList<>();
-        for(Date day : days) {
+	long t = startTime;
+	while(t <= endTime) {
+	    //show statisctic per day
+	    t = t + ONE_DAY; 
+	    Date day = new Date(t);
             Long nom = statService.getDaylyStatByPersonBySiteByDay(personId, siteId,day);
             if(nom != null) {
                 String simpleDate = format.format(day);
                 list.add(new DailyStat(simpleDate,nom.intValue()));
             }
-        }
+	}
         if (list.size() == 0) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
