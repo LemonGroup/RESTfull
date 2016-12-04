@@ -13,13 +13,10 @@ import java.util.Collection;
 @Repository
 @Transactional
 public class DataSiteRepository implements ISiteRepository {
-
-    private SessionFactory sessionFactory;
-
     @Autowired
-    public DataSiteRepository(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
-    }
+    private SessionFactory sessionFactory;
+    
+    public DataSiteRepository() {}
 
     @Override
     public Collection getAllSites(long groupId) {
@@ -59,5 +56,14 @@ public class DataSiteRepository implements ISiteRepository {
         query.setParameter("groupId", groupId);
         int result = query.executeUpdate();
         return result == 1;
+    }
+
+    @Override
+    public Site getSiteByGroupIdAndSiteName(String site, long groupId) {
+        Session session = sessionFactory.getCurrentSession();
+        Query query = session.createQuery("from Site where groupid = :groupId AND site = :site ");
+        query.setParameter("groupId", groupId);
+        query.setParameter("site", site);
+        return (Site) query.uniqueResult();
     }
 }

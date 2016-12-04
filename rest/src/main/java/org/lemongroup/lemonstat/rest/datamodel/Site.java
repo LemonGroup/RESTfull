@@ -57,4 +57,23 @@ public class Site {
     public void setGroupId(long groupId) {
         this.groupId = groupId;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Site site1 = (Site) o;
+
+        if (groupId != site1.groupId) return false;
+        return site.equals(site1.site);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = site.hashCode();
+        result = 31 * result + (int) (groupId ^ (groupId >>> 32));
+        return result;
+    }
 }
