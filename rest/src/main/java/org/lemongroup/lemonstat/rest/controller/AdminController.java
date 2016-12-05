@@ -67,7 +67,6 @@ public class AdminController {
         } catch (Exception e) {
             isAuthenticated = false;
         }
-        System.out.println(isAuthenticated);
         if (isAuthenticated) {
             Token token = new Token(accountService.createNewTokenForUsername(username));
             return new ResponseEntity<Token>(token, HttpStatus.OK);
