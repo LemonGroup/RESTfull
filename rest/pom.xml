@@ -3,8 +3,8 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.lemongroup.lemonstat</groupId>
   <artifactId>rest</artifactId>
-  <packaging>jar</packaging>
-  <version>1.0-SNAPSHOT</version>
+  <packaging>war</packaging>
+  <version>4.0-STABLE</version>
   <name>rest</name>
   <url>http://maven.apache.org</url>
 
@@ -22,6 +22,7 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-tomcat</artifactId>
+			<scope>provide</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -53,7 +54,8 @@
 	</dependencies>
 
     <properties>
-	<java.version>1.7</java.version>
+	<java.version>1.8</java.version>
+	<tomcat.version>7.0.62</tomcat.version>
     </properties>
 
 
